@@ -12,7 +12,7 @@ class SakitModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['user_id', 'mulai', 'selesai', 'judul', 'deskripsi', 'lampiran', 'status', 'waktu_pengajuan'];
+    protected $allowedFields    = ['user_id', 'mulai', 'selesai', 'judul', 'deskripsi', 'status', 'waktu_pengajuan'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

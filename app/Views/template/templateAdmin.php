@@ -30,10 +30,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link <?= ($current_page === 'dashboard') ? 'active' : ''; ?>" aria-current="page" href="/dashboard">Dashboard</a>
+                        <a class="nav-link <?= ($current_page === 'dashboard') ? 'active' : ''; ?>" href="/dashboard">Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link <?= ($current_page === 'karyawan') ? 'active' : ''; ?>" href="/karyawan">Karyawan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?= ($current_page === 'admin') ? 'active' : ''; ?>" href="/admin">Admin</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link <?= ($current_page === 'laporan') ? 'active' : ''; ?>" href="laporan">Laporan</a>

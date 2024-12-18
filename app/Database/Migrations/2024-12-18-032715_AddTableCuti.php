@@ -21,11 +21,11 @@ class AddTableCuti extends Migration
                 'unsigned'       => true,
             ],
             'mulai' => [
-                'type'    => 'DATETIME',
+                'type'    => 'DATE',
                 'null'       => false,
             ],
             'selesai' => [
-                'type'    => 'DATETIME',
+                'type'    => 'DATE',
                 'null'       => false,
             ],
             'judul' => [
@@ -38,13 +38,14 @@ class AddTableCuti extends Migration
                 'null'       => false,
             ],
             'status' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 255,
+                'type'       => 'ENUM',
+                'constraint' => ['Terima', 'Tolak', 'Menunggu'],
+                'default'    => 'Menunggu',
                 'null'       => false,
             ],
-            'tanggal_pengajuan' => [
+            'waktu_pengajuan' => [
                 'type'    => 'DATETIME',
-                'null'    => true,
+                'null'    => false,
             ],
         ]);
 

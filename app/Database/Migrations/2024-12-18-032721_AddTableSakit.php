@@ -21,11 +21,11 @@ class AddTableSakit extends Migration
                 'unsigned'       => true,
             ],
             'mulai' => [
-                'type'    => 'DATETIME',
+                'type'    => 'DATE',
                 'null'       => false,
             ],
             'selesai' => [
-                'type'    => 'DATETIME',
+                'type'    => 'DATE',
                 'null'       => false,
             ],
             'judul' => [
@@ -37,14 +37,10 @@ class AddTableSakit extends Migration
                 'type'       => 'TEXT',
                 'null'       => true,
             ],
-            'lampiran' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 255,
-                'null'       => true,
-            ],
             'status' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 255,
+                'type'       => 'ENUM',
+                'constraint' => ['Terima', 'Tolak', 'Menunggu'],
+                'default'    => 'Menunggu',
                 'null'       => false,
             ],
             'waktu_pengajuan' => [

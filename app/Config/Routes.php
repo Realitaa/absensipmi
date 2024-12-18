@@ -10,4 +10,5 @@ $routes->get('/', 'AuthController::login');
 
 $routes->get('/dashboard', 'AdminController::dashboard');
 $routes->get('/karyawan', 'AdminController::karyawan');
+$routes->get('/admin', 'AdminController::admin');
 $routes->get('/laporan', 'AdminController::laporan');
