@@ -56,14 +56,14 @@
                 </div>
             </div>
 
-            <!-- Card Izin -->
+            <!-- Card Cuti -->
             <div class="col-6 col-sm-6 col-md-3 mb-4">
-                <div class="card align-items-center" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" onclick="showTable('izin')">
+                <div class="card align-items-center" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" onclick="showTable('cuti')">
                     <div class="position-relative pt-3">
-                        <img src="beach-umbrella.png" class="card-img-top" alt="Karyawan Izin" style="width: 100px;">
+                        <img src="beach-umbrella.png" class="card-img-top" alt="Karyawan Cuti" style="width: 100px;">
                     </div>
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                        <h2>Izin</h2>
+                        <h2>Cuti</h2>
                         <h3 class="mb-0" style="font-size: 2rem;">0</h3>
                     </div>
                 </div>
@@ -86,31 +86,7 @@
 
     <!-- Tabel Default: Hadir -->
     <div id="table-container" class="p-3">
-        <h3 class="mt-3">Tabel Kehadiran</h3>
-        <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-            <th scope="col" width="10px">No.</th>
-            <th scope="col">Nama</th>
-            <th scope="col">Divisi</th>
-            <th scope="col">Waktu</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-            </tr>
-            <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-            </tr>
-        </tbody>
-        </table>
+        <!-- Bagian ini diisi oleh data dari fungsi showTable -->
     </div>
 
     </div>
@@ -130,23 +106,27 @@ function showTable(status) {
                     <tr>
                     <th scope="col" width="10px">No.</th>
                     <th scope="col">Nama</th>
-                    <th scope="col">Divisi</th>
+                    <th scope="col">Jabatan</th>
                     <th scope="col">Waktu</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                    </tr>
+                    <?php 
+                        $i = 1;
+                        if (!empty($karyawan_hadir)): ?>
+                        <?php foreach ($karyawan_hadir as $kehadiran): ?>
+                            <tr>
+                            <th scope="row"><?= $i++ ?></th>
+                            <td><?= esc($kehadiran['nama']); ?></td>
+                            <td><?= esc($kehadiran['jabatan']); ?></td>
+                            <td><?= esc($kehadiran['waktu']); ?></td>
+                            </tr>
+                        <?php endforeach ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4">Belum ada yang hadir hari ini.</td>
+                        </tr>
+                    <?php endif ?>
                 </tbody>
                 </table>
             `;
@@ -158,51 +138,79 @@ function showTable(status) {
                     <tr>
                     <th scope="col" width="10px">No.</th>
                     <th scope="col">Nama</th>
-                    <th scope="col">Divisi</th>
-                    <th scope="col">Waktu</th>
+                    <th scope="col">Mulai Sakit</th>
+                    <th scope="col">Selesai Sakit</th>
+                    <th scope="col">Judul</th>
+                    <th scope="col">Deskripsi</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Waktu Pengajuan</th>
+                    <th scope="col">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                    </tr>
+                    <?php
+                        $i = 1;
+                        if (!empty($karyawan_sakit)): ?>
+                        <?php foreach ($karyawan_sakit as $kesakitan): ?>
+                            <tr>
+                            <th scope="row"><?= $i++ ?></th>
+                            <td><?= esc($kesakitan['nama']); ?></td>
+                            <td><?= esc($kesakitan['mulai']); ?></td>
+                            <td><?= esc($kesakitan['selesai']); ?></td>
+                            <td><?= esc($kesakitan['judul']); ?></td>
+                            <td><?= esc($kesakitan['deskripsi']); ?></td>
+                            <td><?= esc($kesakitan['status']); ?></td>
+                            <td><?= esc($kesakitan['waktu_pengajuan']); ?></td>
+                            <td><a class="btn btn-primary">Rincian</a></td>
+                            </tr>
+                        <?php endforeach ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4">Tidak ada karyawan yang sakit hari ini.</td>
+                        </tr>
+                    <?php endif ?>
                 </tbody>
                 </table>
             `;
-        } else if (status === 'izin') {
+        } else if (status === 'cuti') {
             tableHtml = `
-                <h3 class="mt-3">Tabel Izin</h3>
+                <h3 class="mt-3">Tabel Cuti</h3>
                 <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
                     <th scope="col" width="10px">No.</th>
                     <th scope="col">Nama</th>
-                    <th scope="col">Divisi</th>
-                    <th scope="col">Waktu</th>
+                    <th scope="col">Mulai Cuti</th>
+                    <th scope="col">Selesai Cuti</th>
+                    <th scope="col">Judul</th>
+                    <th scope="col">Deskripsi</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Waktu Pengajuan</th>
+                    <th scope="col">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                    </tr>
+                    <?php
+                        $i = 1;
+                        if (!empty($karyawan_cuti)): ?>
+                        <?php foreach ($karyawan_cuti as $cuti): ?>
+                            <tr>
+                            <th scope="row"><?= $i++ ?></th>
+                            <td><?= esc($cuti['nama']); ?></td>
+                            <td><?= esc($cuti['mulai']); ?></td>
+                            <td><?= esc($cuti['selesai']); ?></td>
+                            <td><?= esc($cuti['judul']); ?></td>
+                            <td><?= esc($cuti['deskripsi']); ?></td>
+                            <td><?= esc($cuti['status']); ?></td>
+                            <td><?= esc($cuti['waktu_pengajuan']); ?></td>
+                            <td><a class="btn btn-primary">Rincian</a></td>
+                            </tr>
+                        <?php endforeach ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4">Tidak ada karyawan yang cuti hari ini.</td>
+                        </tr>
+                    <?php endif ?>
                 </tbody>
                 </table>
             `;
@@ -214,23 +222,31 @@ function showTable(status) {
                     <tr>
                     <th scope="col" width="10px">No.</th>
                     <th scope="col">Nama</th>
-                    <th scope="col">Divisi</th>
-                    <th scope="col">Waktu</th>
+                    <th scope="col">Jabatan</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">No Telepon</th>
+                    <th scope="col">Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                    </tr>
-                    <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                    </tr>
+                    <?php
+                        $i = 1;
+                        if (!empty($karyawan_tanpaKeterangan)): ?>
+                        <?php foreach ($karyawan_tanpaKeterangan as $tK): ?>
+                            <tr>
+                            <th scope="row"><?= $i++ ?></th>
+                            <td><?= esc($tK['nama']); ?></td>
+                            <td><?= esc($tK['jabatan']); ?></td>
+                            <td><a href="mailto:<?= esc($tK['email']); ?>"><?= esc($tK['email']); ?></a></td>
+                            <td><a href="https://wa.me/<?= esc($tK['no_telepon']); ?>"><?= esc($tK['no_telepon']); ?></a></td>
+                            <td><a class="btn btn-primary">Rincian</a></td>
+                            </tr>
+                        <?php endforeach ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4">Absensi karyawan hari ini sudah selesai.</td>
+                        </tr>
+                    <?php endif ?>
                 </tbody>
                 </table>
             `;
