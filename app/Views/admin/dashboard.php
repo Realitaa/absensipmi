@@ -56,14 +56,14 @@
                 </div>
             </div>
 
-            <!-- Card Izin -->
+            <!-- Card Cuti -->
             <div class="col-6 col-sm-6 col-md-3 mb-4">
-                <div class="card align-items-center" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" onclick="showTable('izin')">
+                <div class="card align-items-center" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" onclick="showTable('cuti')">
                     <div class="position-relative pt-3">
-                        <img src="beach-umbrella.png" class="card-img-top" alt="Karyawan Izin" style="width: 100px;">
+                        <img src="beach-umbrella.png" class="card-img-top" alt="Karyawan Cuti" style="width: 100px;">
                     </div>
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                        <h2>Izin</h2>
+                        <h2>Cuti</h2>
                         <h3 class="mb-0" style="font-size: 2rem;">0</h3>
                     </div>
                 </div>
@@ -178,9 +178,9 @@ function showTable(status) {
                 </tbody>
                 </table>
             `;
-        } else if (status === 'izin') {
+        } else if (status === 'cuti') {
             tableHtml = `
-                <h3 class="mt-3">Tabel Izin</h3>
+                <h3 class="mt-3">Tabel Cuti</h3>
                 <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
