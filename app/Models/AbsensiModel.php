@@ -12,7 +12,7 @@ class AbsensiModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['nama', 'user_id', 'tanggal', 'tipe'];
+    protected $allowedFields    = ['user_id', 'tanggal', 'tipe'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

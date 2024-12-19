@@ -12,7 +12,7 @@ class CutiModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['user_id', 'absensi_id', 'judul', 'deskripsi'];
+    protected $allowedFields    = ['user_id', 'absensi_id', 'judul', 'deskripsi', 'status'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

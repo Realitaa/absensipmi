@@ -28,6 +28,12 @@ class AddTableSakit extends Migration
             'deskripsi' => [
                 'type'       => 'TEXT',
             ],
+            'status' => [
+                'type'       => 'ENUM',
+                'constraint' => ['Terima', 'Tolak', 'Menunggu'],
+                'default'    => 'Menunggu',
+                'null'       => false,
+            ],
             'created_at' => [
                 'type'    => 'DATETIME',
                 'null'    => true,

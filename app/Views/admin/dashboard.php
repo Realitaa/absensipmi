@@ -117,7 +117,7 @@ function showTable(status) {
                         <?php foreach ($karyawan_hadir as $kehadiran): ?>
                             <tr>
                             <th scope="row"><?= $i++ ?></th>
-                            <td><?= esc($kehadiran['nama']); ?></td>
+                            <td><a href="karyawan/"<?= esc($kehadiran['kID']); ?>><?= esc($kehadiran['nama']); ?></a></td>
                             <td><?= esc($kehadiran['jabatan']); ?></td>
                             <td><?= esc($kehadiran['waktu']); ?></td>
                             </tr>
@@ -138,6 +138,7 @@ function showTable(status) {
                     <tr>
                     <th scope="col" width="10px">No.</th>
                     <th scope="col">Nama</th>
+                    <th scope="col">Jabatan</th>
                     <th scope="col">Judul</th>
                     <th scope="col">Deskripsi</th>
                     <th scope="col">Status</th>
@@ -152,11 +153,12 @@ function showTable(status) {
                         <?php foreach ($karyawan_sakit as $kesakitan): ?>
                             <tr>
                             <th scope="row"><?= $i++ ?></th>
-                            <td><?= esc($kesakitan['nama']); ?></td>
+                            <td><a href="karyawan/"<?= esc($kehadiran['kID']); ?>><?= esc($kehadiran['nama']); ?></a></td>
+                            <td><?= esc($kesakitan['jabatan']); ?></td>
                             <td><?= esc($kesakitan['judul']); ?></td>
                             <td><?= esc($kesakitan['deskripsi']); ?></td>
                             <td><?= esc($kesakitan['status']); ?></td>
-                            <td><?= esc($kesakitan['waktu_pengajuan']); ?></td>
+                            <td><?= esc($kesakitan['waktu']); ?></td>
                             <td><a class="btn btn-primary">Rincian</a></td>
                             </tr>
                         <?php endforeach ?>
@@ -176,6 +178,7 @@ function showTable(status) {
                     <tr>
                     <th scope="col" width="10px">No.</th>
                     <th scope="col">Nama</th>
+                    <th scope="col">Jabatan</th>
                     <th scope="col">Judul</th>
                     <th scope="col">Deskripsi</th>
                     <th scope="col">Status</th>
@@ -190,11 +193,12 @@ function showTable(status) {
                         <?php foreach ($karyawan_cuti as $cuti): ?>
                             <tr>
                             <th scope="row"><?= $i++ ?></th>
-                            <td><?= esc($cuti['nama']); ?></td>
+                            <td><a href="karyawan/"<?= esc($kehadiran['kID']); ?>><?= esc($kehadiran['nama']); ?></a></td>
+                            <td><?= esc($cuti['jabatan']); ?></td>
                             <td><?= esc($cuti['judul']); ?></td>
                             <td><?= esc($cuti['deskripsi']); ?></td>
                             <td><?= esc($cuti['status']); ?></td>
-                            <td><?= esc($cuti['waktu_pengajuan']); ?></td>
+                            <td><?= esc($cuti['waktu']); ?></td>
                             <td><a class="btn btn-primary">Rincian</a></td>
                             </tr>
                         <?php endforeach ?>
@@ -215,9 +219,9 @@ function showTable(status) {
                     <th scope="col" width="10px">No.</th>
                     <th scope="col">Nama</th>
                     <th scope="col">Jabatan</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Email</th>
                     <th scope="col">No Telepon</th>
-                    <th scope="col">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -227,7 +231,7 @@ function showTable(status) {
                         <?php foreach ($karyawan_tanpaKeterangan as $tK): ?>
                             <tr>
                             <th scope="row"><?= $i++ ?></th>
-                            <td><?= esc($tK['nama']); ?></td>
+                            <td><a href="karyawan/"<?= esc($kehadiran['kID']); ?>><?= esc($kehadiran['nama']); ?></a></td>
                             <td><?= esc($tK['jabatan']); ?></td>
                             <td><a href="mailto:<?= esc($tK['email']); ?>"><?= esc($tK['email']); ?></a></td>
                             <td><a href="https://wa.me/<?= esc($tK['no_telepon']); ?>"><?= esc($tK['no_telepon']); ?></a></td>
@@ -236,7 +240,7 @@ function showTable(status) {
                         <?php endforeach ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="4">Absensi karyawan hari ini sudah selesai.</td>
+                            <td colspan="6">Absensi karyawan hari ini sudah selesai.</td>
                         </tr>
                     <?php endif ?>
                 </tbody>

@@ -3,65 +3,59 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use App\Models\CutiModel;
 use App\Models\UserModel;
+use App\Models\AbsensiModel;
 use App\Models\AdminModel;
-use App\Models\HadirModel;
-use App\Models\SakitModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class AdminController extends BaseController
 {
     public function dashboard()
-    {
-        $modelHadir = new HadirModel();
-        $modelSakit = new SakitModel();
-        $modelCuti = new CutiModel();
-        $modelUser = new UserModel();
-        $karyawan_hadir = $modelHadir->select('hadir.id, nama, jabatan, waktu')
-            ->join('users', 'user_id = users.id')
-            ->where('DATE(waktu)', date('Y-m-d'))
-            ->findAll();
+{
+    $modelUser = new UserModel();
+    $modelAbsensi = new AbsensiModel(); // Pastikan model ini ada
+    $today = date('Y-m-d'); // Format tanggal untuk database
 
-        $karyawan_sakit = $modelSakit->select('sakit.id, nama, waktu, judul, deskripsi, sakit.status, waktu_pengajuan')
-            ->join('users', 'user_id = users.id')
-            ->where('DATE(waktu)', date('Y-m-d'))
-            ->findAll();
+    $karyawan_hadir = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, TIME(absensi.created_at) AS waktu')
+        ->join('users u', 'absensi.user_id = u.id')
+        ->where('tipe', 'Hadir')
+        ->where('tanggal', $today)
+        ->findAll();
 
-        $karyawan_cuti = $modelCuti->select('cuti.id, nama, waktu, judul, deskripsi, cuti.status, waktu_pengajuan')
-            ->join('users', 'user_id = users.id')
-            ->where('DATE(waktu)', date('Y-m-d'))
-            ->findAll();
+    $karyawan_sakit = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, s.judul, s.deskripsi, s.status, absensi.created_at AS waktu')
+        ->join('sakit s', 's.absensi_id = absensi.id')
+        ->join('users u', 'absensi.user_id = u.id')
+        ->where('tipe', 'Sakit')
+        ->where('tanggal', $today)
+        ->findAll();
 
-        $karyawan_tanpaKeterangan = $modelUser
-            ->select('users.nama, users.jabatan, users.email, users.no_telepon, users.status')
-            ->where('NOT EXISTS (
-                SELECT 1 FROM sakit 
-                WHERE users.id = sakit.user_id 
-                AND DATE(sakit.waktu) = CURDATE()
-            )')
-            ->where('NOT EXISTS (
-                SELECT 1 FROM cuti 
-                WHERE users.id = cuti.user_id 
-                AND DATE(cuti.waktu) = CURDATE()
-            )')
-            ->where('NOT EXISTS (
-                SELECT 1 FROM hadir 
-                WHERE users.id = hadir.user_id 
-                AND DATE(hadir.waktu) = CURDATE()
-            )')
-            ->findAll();
+    $karyawan_cuti = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, c.judul, c.deskripsi, c.status, absensi.created_at AS waktu')
+    ->join('cuti c', 'absensi.id = c.absensi_id')
+        ->join('users u', 'absensi.user_id = u.id')
+        ->where('tipe', 'Cuti')
+        ->where('tanggal', $today)
+        ->findAll();
 
-        $data = [
-            'title' => 'Dashboard Admin',
-            'current_page' => 'dashboard',
-            'karyawan_hadir' => $karyawan_hadir,
-            'karyawan_sakit' => $karyawan_sakit,
-            'karyawan_cuti' => $karyawan_cuti,
-            'karyawan_tanpaKeterangan' => $karyawan_tanpaKeterangan,
-        ];
-        return view('admin/dashboard', $data);
-    }
+    $karyawan_tanpaKeterangan = $modelUser
+        ->select('users.id AS kID, users.nama, users.jabatan, users.status, users.email, users.no_telepon')
+        ->where('NOT EXISTS (
+            SELECT 1 FROM absensi
+            WHERE users.id = absensi.user_id 
+            AND absensi.tanggal = CURDATE()
+        )')
+        ->findAll();
+
+    $data = [
+        'title' => 'Dashboard Admin',
+        'current_page' => 'dashboard',
+        'karyawan_hadir' => $karyawan_hadir,
+        'karyawan_sakit' => $karyawan_sakit,
+        'karyawan_cuti' => $karyawan_cuti,
+        'karyawan_tanpaKeterangan' => $karyawan_tanpaKeterangan,
+    ];
+    return view('admin/dashboard', $data);
+}
+
 
     public function karyawan()
     {

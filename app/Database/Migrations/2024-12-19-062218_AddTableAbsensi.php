@@ -15,11 +15,6 @@ class AddTableAbsensi extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
-            'nama' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 50,
-                'null'       => false,
-            ],
             'user_id' => [
                 'type'           => 'INT',
                 'constraint'     => 11,
