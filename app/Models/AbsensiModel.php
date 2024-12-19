@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class HadirModel extends Model
+class AbsensiModel extends Model
 {
-    protected $table            = 'hadir';
+    protected $table            = 'absensi';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['user_id', 'waktu'];
+    protected $allowedFields    = ['nama', 'user_id', 'tanggal', 'tipe'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -23,7 +23,7 @@ class HadirModel extends Model
     // Dates
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
-    protected $createdField  = 'waktu';
+    protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 

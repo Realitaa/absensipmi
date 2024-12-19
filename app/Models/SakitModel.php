@@ -12,7 +12,7 @@ class SakitModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['user_id', 'mulai', 'selesai', 'judul', 'deskripsi', 'status', 'waktu_pengajuan'];
+    protected $allowedFields    = ['user_id', 'absensi_id', 'judul', 'deskripsi'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -21,9 +21,9 @@ class SakitModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = true;
+    protected $useTimestamps = false;
     protected $dateFormat    = 'datetime';
-    protected $createdField  = 'waktu_pengajuan';
+    protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 

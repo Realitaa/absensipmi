@@ -15,37 +15,26 @@ class AddTableCuti extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
-            'user_id' => [
+            'absensi_id' => [
                 'type'           => 'INT',
                 'constraint'     => 11,
                 'unsigned'       => true,
             ],
-            'mulai' => [
-                'type'    => 'DATE',
-                'null'       => false,
-            ],
-            'selesai' => [
-                'type'    => 'DATE',
-                'null'       => false,
-            ],
             'judul' => [
                 'type'       => 'VARCHAR',
-                'constraint' => 255,
-                'null'       => true,
+                'constraint' => 50,
+                'null'       => false,
             ],
             'deskripsi' => [
                 'type'       => 'TEXT',
-                'null'       => false,
             ],
-            'status' => [
-                'type'       => 'ENUM',
-                'constraint' => ['Terima', 'Tolak', 'Menunggu'],
-                'default'    => 'Menunggu',
-                'null'       => false,
-            ],
-            'waktu_pengajuan' => [
+            'created_at' => [
                 'type'    => 'DATETIME',
-                'null'    => false,
+                'null'    => true,
+            ],
+            'updated_at' => [
+                'type'    => 'DATETIME',
+                'null'    => true,
             ],
         ]);
 
@@ -53,7 +42,7 @@ class AddTableCuti extends Migration
         $this->forge->addKey('id', true);
 
         // Menentukan foreign key
-        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('absensi_id', 'absensi', 'id', 'CASCADE', 'CASCADE');
 
         // Membuat tabel 'users'
         $this->forge->createTable('cuti', true);
@@ -61,7 +50,6 @@ class AddTableCuti extends Migration
 
     public function down()
     {
-        // Menghapus tabel 'users'
         $this->forge->dropTable('cuti', true);
     }
 }

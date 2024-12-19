@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class AddTableHadir extends Migration
+class AddTableSakit extends Migration
 {
     public function up()
     {
@@ -15,30 +15,41 @@ class AddTableHadir extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
-            'user_id' => [
+            'absensi_id' => [
                 'type'           => 'INT',
                 'constraint'     => 11,
                 'unsigned'       => true,
             ],
-            'waktu' => [
+            'judul' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 50,
+                'null'       => false,
+            ],
+            'deskripsi' => [
+                'type'       => 'TEXT',
+            ],
+            'created_at' => [
                 'type'    => 'DATETIME',
-                'null'    => false,
+                'null'    => true,
+            ],
+            'updated_at' => [
+                'type'    => 'DATETIME',
+                'null'    => true,
             ],
         ]);
 
         // Menentukan primary key
         $this->forge->addKey('id', true);
-
+        
         // Menentukan foreign key
-        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('absensi_id', 'absensi', 'id', 'CASCADE', 'CASCADE');
 
         // Membuat tabel 'users'
-        $this->forge->createTable('hadir', true);
+        $this->forge->createTable('sakit', true);
     }
 
     public function down()
     {
-        // Menghapus tabel 'users'
-        $this->forge->dropTable('hadir', true);
+        $this->forge->dropTable('sakit', true);
     }
 }

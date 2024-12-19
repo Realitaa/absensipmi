@@ -6,8 +6,8 @@
 
 <div class="bg-light">
 <div id="table-container" class="p-3">
-    <h3 class="">Tabel Kehadiran Harian</h3>
-    <p>Tanggal: <input type="text" id="tanggal" name="tanggal" placeholder="Pilih tanggal" value="<?= date('d-m-Y'); ?>" ></p>
+    <h3 class="">Tabel Absensi Harian</h3>
+    <p>Tanggal: <input type="text" id="tanggal" name="tanggal" placeholder="Pilih tanggal" value="<?= date('d-m-Y', strtotime('-1 day')); ?>"></p>
     
 
     <table class="table table-bordered table-striped text-center align-middle">
@@ -25,48 +25,25 @@
     <tbody id="table-body">
         <?php if (!empty($karyawan)): ?>
             <?php 
-                $i = 1; 
-                
-                if (!empty($karyawan_tanpaKeterangan)): ?>
-                    <?php foreach ($karyawan_tanpaKeterangan as $tK): ?>
-                        <tr>
-                        <th scope="row"><?= $i++ ?></th>
-                        <td><?= esc($tK['nama']); ?></td>
-                        <td><?= esc($tK['jabatan']); ?></td>
-                        <td><a href="mailto:<?= esc($tK['email']); ?>"><?= esc($tK['email']); ?></a></td>
-                        <td><a href="https://wa.me/<?= esc($tK['no_telepon']); ?>"><?= esc($tK['no_telepon']); ?></a></td>
-                        <td><a class="btn btn-primary">Rincian</a></td>
-                        </tr>
-                    <?php endforeach ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="4">Absensi karyawan hari ini sudah selesai.</td>
-                    </tr>
-                <?php endif ?>
-
-<?php
                 foreach ($karyawan as $k): 
-                    // Filter berdasarkan tanggal (menampilkan hanya yang tanggalnya sama dengan hari ini)
- // Menggunakan format yang sudah sesuai dengan query
-                        // Tentukan absensi
-                         // Default
-
                           if ($k['hadir_id'] !== null) {
                             $k['absensi'] = 'Hadir';
                         } elseif ($k['sakit_id'] !== null) {
                             $k['absensi'] = 'Sakit';
                         } elseif ($k['cuti_id'] !== null) {
                             $k['absensi'] = 'Cuti';
+                        } elseif ($k['tanpaketerangan_id'] !== null) {
+                            $k['absensi'] = 'Tanpa Keterangan';
                         }
             ?>
             <tr>
-                <th scope="row"><?= $i++; ?></th>
+                <th scope="row" class="row-number"></th>
                 <td><?= esc($k['nama']); ?></td>
                 <td><?= esc($k['jabatan']); ?></td>
                 <td><?= esc($k['status']); ?></td>
                 <td><?= esc($k['absensi']); ?></td> <!-- Gunakan variabel absensi -->
                 <td><?= esc($k['tanggal']); ?></td> <!-- Menampilkan tanggal sesuai format DD-MM-YYYY -->
-                <td><?= esc($k['jam']); ?></td>
+                <td><?= esc($k['jam']) ? : "-"; ?></td>
             </tr>
             <?php endforeach; ?>
         <?php else : ?>
@@ -80,63 +57,46 @@
 </div>
 
     <div id="table-container" class="p-3">
-        <h3 class="">Tabel Kehadiran Mingguan</h3>
-        <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th scope="col" width="10px" rowspan="2">No.</th>
-                <th scope="col" width="400px" rowspan="2">Nama</th>
-                <th scope="col" rowspan="2">Senin</th>
-                <th scope="col" rowspan="2">Selasa</th>
-                <th scope="col" rowspan="2">Rabu</th>
-                <th scope="col" rowspan="2">Kamis</th>
-                <th scope="col" rowspan="2">Jumat</th>
-                <th scope="col" rowspan="2">Sabtu</th>
-                <th scope="col" colspan="4">Summary</th>
-            </tr>
-            <tr>
-                <th>H</th>
-                <th>S</th>
-                <th>C</th>
-                <th>TP</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-            <th scope="row">1</th>
-            <td>Reza</td>
-            <td>Hadir</td>
-            <td>Hadir</td>
-            <td>Hadir</td>
-            <td>Hadir</td>
-            <td>Hadir</td>
-            <td>Hadir</td>
-            </tr>
-        </tbody>
-        </table>
-    </div>
+        <h3 class="">Tabel Absensi Bulanan</h3>
+        <?php
+        $months = [
+            1 => 'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        ?>
+        <p>Bulan: 
+        <select name="month" id="month">
+            <?php foreach ($months as $iM => $month) {
+                echo "<option value='$month'>" . $month . "</option>";
+            }; ?>
+        </select>
+        </p>
 
-    <div id="table-container" class="p-3">
-        <h3 class="">Tabel Kehadiran Bulanan</h3>
         <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th scope="col" width="10px" rowspan="2">No.</th>
                 <th scope="col" width="400px" rowspan="2">Nama</th>
-                <th scope="col">Jumlah Hadir</th>
-                <th scope="col">Jumlah Sakit</th>
-                <th scope="col">Jumlah Cuti</th>
-                <th scope="col">Jumlah Tanpa Keterangan</th>
+                <?php for ($i = 1;$i<=30;$i++): ?>
+                    <th scope="col" rowspan="2"><?= $i; ?></th>
+                <?php endfor ?>
+                <th colspan="4">Summary</th>
+            </tr>
+            <tr>
+                <th scope="col">H</th>
+                <th scope="col">S</th>
+                <th scope="col">C</th>
+                <th scope="col">TK</th>
             </tr>
         </thead>
         <tbody>
             <tr>
             <th scope="row">1</th>
             <td>Reza</td>
-            <td>100</td>
-            <td>100</td></td>
-            <td>100</td>
-            <td>100</td>
+            <td>H</td>
+            <td>S</td></td>
+            <td>C</td>
+            <td>TK</td>
             </tr>
         </tbody>
         </table>
@@ -164,41 +124,16 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-<?php
-    $minDate = date('d-m-Y', strtotime(min(array_column($karyawan, 'tanggal'))));
-    $maxDate = date('d-m-Y', strtotime(max(array_column($karyawan, 'tanggal'))));
-?>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+       
+
+        // Inisialisasi Flatpickr
         flatpickr('#tanggal', {
-            dateFormat: 'd-m-Y', // Format DD-MM-YYYY
-            defaultDate: new Date(), // Set default ke hari ini
-            minDate: "<?= esc($minDate); ?>", // Batas minimal tanggal
-            maxDate: "today", // Batas maksimal tanggal
+            dateFormat: 'd-m-Y',
+
         });
     });
-
-    document.getElementById('tanggal').addEventListener('change', function() {
-        // Ambil tanggal yang dipilih
-        const selectedDate = document.getElementById('tanggal').value;
-        
-        // Dapatkan seluruh tabel tubuh
-        const rows = document.querySelectorAll('#table-body tr');
-
-        rows.forEach(row => {
-            const dateCell = row.cells[5]; // Kolom Tanggal
-            if (dateCell) {
-                // Jika tanggal di tabel tidak sama dengan tanggal yang dipilih, sembunyikan baris
-                if (dateCell.textContent !== selectedDate) {
-                    row.style.display = 'none';
-                } else {
-                    row.style.display = '';
-                }
-            }
-        });
-});
 </script>
 
 <?= $this->endSection('content'); ?>

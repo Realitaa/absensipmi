@@ -138,8 +138,6 @@ function showTable(status) {
                     <tr>
                     <th scope="col" width="10px">No.</th>
                     <th scope="col">Nama</th>
-                    <th scope="col">Mulai Sakit</th>
-                    <th scope="col">Selesai Sakit</th>
                     <th scope="col">Judul</th>
                     <th scope="col">Deskripsi</th>
                     <th scope="col">Status</th>
@@ -155,8 +153,6 @@ function showTable(status) {
                             <tr>
                             <th scope="row"><?= $i++ ?></th>
                             <td><?= esc($kesakitan['nama']); ?></td>
-                            <td><?= esc($kesakitan['mulai']); ?></td>
-                            <td><?= esc($kesakitan['selesai']); ?></td>
                             <td><?= esc($kesakitan['judul']); ?></td>
                             <td><?= esc($kesakitan['deskripsi']); ?></td>
                             <td><?= esc($kesakitan['status']); ?></td>
@@ -180,8 +176,6 @@ function showTable(status) {
                     <tr>
                     <th scope="col" width="10px">No.</th>
                     <th scope="col">Nama</th>
-                    <th scope="col">Mulai Cuti</th>
-                    <th scope="col">Selesai Cuti</th>
                     <th scope="col">Judul</th>
                     <th scope="col">Deskripsi</th>
                     <th scope="col">Status</th>
@@ -197,8 +191,6 @@ function showTable(status) {
                             <tr>
                             <th scope="row"><?= $i++ ?></th>
                             <td><?= esc($cuti['nama']); ?></td>
-                            <td><?= esc($cuti['mulai']); ?></td>
-                            <td><?= esc($cuti['selesai']); ?></td>
                             <td><?= esc($cuti['judul']); ?></td>
                             <td><?= esc($cuti['deskripsi']); ?></td>
                             <td><?= esc($cuti['status']); ?></td>

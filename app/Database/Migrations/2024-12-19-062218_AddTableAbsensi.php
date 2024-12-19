@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class AddTableSakit extends Migration
+class AddTableAbsensi extends Migration
 {
     public function up()
     {
@@ -15,53 +15,48 @@ class AddTableSakit extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
+            'nama' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 50,
+                'null'       => false,
+            ],
             'user_id' => [
                 'type'           => 'INT',
                 'constraint'     => 11,
                 'unsigned'       => true,
             ],
-            'mulai' => [
-                'type'    => 'DATE',
+            'tanggal' => [
+                'type'       => 'DATE',
                 'null'       => false,
             ],
-            'selesai' => [
-                'type'    => 'DATE',
-                'null'       => false,
-            ],
-            'judul' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 255,
-                'null'       => false,
-            ],
-            'deskripsi' => [
-                'type'       => 'TEXT',
-                'null'       => true,
-            ],
-            'status' => [
+            'tipe' => [
                 'type'       => 'ENUM',
-                'constraint' => ['Terima', 'Tolak', 'Menunggu'],
-                'default'    => 'Menunggu',
+                'constraint' => ['Hadir', 'Sakit', 'Cuti', 'Tanpa Keterangan'],
+                'default'    => 'Tanpa Keterangan',
                 'null'       => false,
             ],
-            'waktu_pengajuan' => [
+            'created_at' => [
                 'type'    => 'DATETIME',
-                'null'    => false,
+                'null'    => true,
+            ],
+            'updated_at' => [
+                'type'    => 'DATETIME',
+                'null'    => true,
             ],
         ]);
 
         // Menentukan primary key
         $this->forge->addKey('id', true);
 
-         // Menentukan foreign key
+        // Menentukan foreign key
         $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
 
         // Membuat tabel 'users'
-        $this->forge->createTable('sakit', true);
+        $this->forge->createTable('absensi', true);
     }
 
     public function down()
     {
-        // Menghapus tabel 'users'
-        $this->forge->dropTable('sakit', true);
+        $this->forge->dropTable('absensi', true);
     }
 }

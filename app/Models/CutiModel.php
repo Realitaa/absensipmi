@@ -12,7 +12,7 @@ class CutiModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['user_id', 'mulai', 'selesai', 'judul', 'deskripsi', 'status', 'tanggal_pengajuan'];
+    protected $allowedFields    = ['user_id', 'absensi_id', 'judul', 'deskripsi'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -21,9 +21,9 @@ class CutiModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = false;
+    protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
-    protected $createdField  = 'tanggal_pengajuan';
+    protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 
