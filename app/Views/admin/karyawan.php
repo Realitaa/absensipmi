@@ -15,23 +15,32 @@
             <th scope="col">No Telepon</th>
             <th scope="col">Jabatan</th>
             <th scope="col">Status</th>
-            <th scope="col">Kehadiran</th>
             <th scope="col">Aksi</th>
             </tr>
         </thead>
         <tbody>
             <?php if (!empty($karyawan)): ?>
-                <?php foreach ($karyawan as $k):  ?>
-                    <tr height="200px">
-                        <th scope="row"><?= esc($k['id']); ?></th>
-                        <td width="200px"><?= esc($k['foto']); ?></td>
+                <?php 
+                    $i = 1; 
+                    foreach ($karyawan as $k): 
+                    ?>
+                    <tr>
+                        <th scope="row"><?= $i++; ?></th>
+                        <td>
+                            <?php if (!empty($k['foto'])): ?>
+                                <img src="<?= esc($k['foto']); ?>" alt="Foto <?= esc($k['nama']); ?>" width="100" height="100">
+                            <?php else: ?>
+                                <span>Tidak ada foto</span>
+                            <?php endif; ?>
+                        </td>
                         <td><?= esc($k['nama']); ?></td>
                         <td><?= esc($k['email']); ?></td>
                         <td><?= esc($k['no_telepon']); ?></td>
                         <td><?= esc($k['jabatan']); ?></td>
                         <td><?= esc($k['status']); ?></td>
+                        <td><a href="#" class="btn btn-primary">Aksi</a></td>
                     </tr>
-                <?php endforeach ?>
+                <?php endforeach; ?>
             <?php else : ?>
                 <td colspan="7">Tidak Ada Karyawan</td>
             <?php endif ?>

@@ -14,6 +14,8 @@
         background-image: url(WebBG.jpg);
         background-repeat: no-repeat;
         background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
     }
 </style>
 
@@ -33,7 +35,7 @@
                         <a class="nav-link <?= ($current_page === 'dashboard') ? 'active' : ''; ?>" href="/dashboard">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?= ($current_page === 'karyawan') ? 'active' : ''; ?>" href="/karyawan">Karyawan</a>
+                        <a class="nav-link <?= ($current_page === 'karyawan') ? 'active' : ''; ?>" href="/managekaryawan">Karyawan</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link <?= ($current_page === 'admin') ? 'active' : ''; ?>" href="/admin">Admin</a>

@@ -101,7 +101,7 @@ function showTable(status) {
         if (status === 'hadir') {
             tableHtml = `
                 <h3 class="mt-3">Tabel Kehadiran</h3>
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped text-center align-middle">
                 <thead>
                     <tr>
                     <th scope="col" width="10px">No.</th>
@@ -133,7 +133,7 @@ function showTable(status) {
         } else if (status === 'sakit') {
             tableHtml = `
                 <h3 class="mt-3">Tabel Sakit</h3>
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped text-center align-middle">
                 <thead>
                     <tr>
                     <th scope="col" width="10px">No.</th>
@@ -175,7 +175,7 @@ function showTable(status) {
         } else if (status === 'cuti') {
             tableHtml = `
                 <h3 class="mt-3">Tabel Cuti</h3>
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped text-center align-middle">
                 <thead>
                     <tr>
                     <th scope="col" width="10px">No.</th>
@@ -217,7 +217,7 @@ function showTable(status) {
         } else if (status === 'tanpaKeterangan') {
             tableHtml = `
                 <h3 class="mt-3">Tabel Tanpa Keterangan</h3>
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped text-center align-middle">
                 <thead>
                     <tr>
                     <th scope="col" width="10px">No.</th>
