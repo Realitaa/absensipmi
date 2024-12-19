@@ -109,4 +109,41 @@ class AdminController extends BaseController
         ];
         return view('admin/laporan', $data);
     }
+
+    // Menampilkan halaman tambah karyawan
+    public function addKaryawan()
+    {
+        return view('addKaryawan'); // Pastikan file addKaryawan.php ada di Views
+    }
+
+    // Memproses data form tambah karyawan
+    public function saveKaryawan()
+    {
+        // Validasi data form
+        $validation = $this->validate([
+            'nama' => 'required|min_length[3]|max_length[50]',
+            'email' => 'required|valid_email',
+            'telepon' => 'required|numeric|min_length[10]|max_length[15]',
+            'jabatan' => 'required'
+        ]);
+
+        if (!$validation) {
+            // Jika validasi gagal, kembali ke halaman tambah karyawan
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        // Simpan data ke database (dummy code, sesuaikan dengan model Anda)
+        $data = [
+            'nama' => $this->request->getPost('nama'),
+            'email' => $this->request->getPost('email'),
+            'telepon' => $this->request->getPost('telepon'),
+            'jabatan' => $this->request->getPost('jabatan')
+        ];
+
+        // Simpan data ke database (gunakan model)
+        // Contoh: $this->karyawanModel->save($data);
+
+        // Redirect dengan pesan sukses
+        return redirect()->to('admin/addKaryawan')->with('success', 'Karyawan berhasil ditambahkan!');
+    }
 }

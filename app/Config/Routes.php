@@ -19,3 +19,5 @@ $routes->get('/karyawan/riwayat', 'Karyawan::riwayat');
 $routes->get('/managekaryawan', 'AdminController::karyawan');
 $routes->get('/admin', 'AdminController::admin');
 $routes->get('/laporan', 'AdminController::laporan');
+$routes->get('admin/addKaryawan', 'AdminController::addKaryawan'); // Menampilkan halaman tambah karyawan
+$routes->post('admin/addKaryawan', 'AdminController::saveKaryawan'); // Memproses data form tambah karyawan

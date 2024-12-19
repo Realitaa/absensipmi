@@ -1,3 +1,5 @@
+<?= $this->extend('template/template'); ?>
+<?= $this->section('content'); ?>
 <?= $this->include('karyawan/navbar') ?>
 
 <div class="container mt-4">
@@ -21,3 +23,4 @@
         </tbody>
     </table>
 </div>
+<?= $this->endSection('content'); ?>

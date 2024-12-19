@@ -1,3 +1,5 @@
+<?= $this->extend('template/template'); ?>
+<?= $this->section('content'); ?>
 <?= $this->include('karyawan/navbar') ?>
 
 <?php if (session()->getFlashdata('error')): ?>
@@ -45,3 +47,4 @@
         <button type="submit" class="btn btn-success">Submit</button>
     </form>
 </div>
+<?= $this->endSection('content'); ?>

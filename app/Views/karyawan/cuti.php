@@ -1,3 +1,5 @@
+<?= $this->extend('template/template'); ?>
+<?= $this->section('content'); ?>
 <?= $this->include('karyawan/navbar') ?>
 
 
@@ -45,3 +47,5 @@
         }
     }
 </script>
+
+<?= $this->endSection('content'); ?>
