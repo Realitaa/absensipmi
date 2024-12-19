@@ -96,10 +96,10 @@ class AdminController extends BaseController
         hadir.id AS hadir_id, sakit.id AS sakit_id, cuti.id AS cuti_id,
         DATE_FORMAT(waktu, "%d-%m-%Y") AS tanggal, TIME(waktu) AS jam, 
         COALESCE(hadir.id, sakit.id, cuti.id, 0) AS absensi_status')
-    ->join('hadir', 'hadir.user_id = users.id', 'left')
-    ->join('sakit', 'sakit.user_id = users.id', 'left')
-    ->join('cuti', 'cuti.user_id = users.id', 'left')
-    ->findAll();
+            ->join('hadir', 'hadir.user_id = users.id', 'left')
+            ->join('sakit', 'sakit.user_id = users.id', 'left')
+            ->join('cuti', 'cuti.user_id = users.id', 'left')
+            ->findAll();
 
 
         $data = [
@@ -108,5 +108,42 @@ class AdminController extends BaseController
             'karyawan' => $users,
         ];
         return view('admin/laporan', $data);
+    }
+
+    // Menampilkan halaman tambah karyawan
+    public function addKaryawan()
+    {
+        return view('addKaryawan'); // Pastikan file addKaryawan.php ada di Views
+    }
+
+    // Memproses data form tambah karyawan
+    public function saveKaryawan()
+    {
+        // Validasi data form
+        $validation = $this->validate([
+            'nama' => 'required|min_length[3]|max_length[50]',
+            'email' => 'required|valid_email',
+            'telepon' => 'required|numeric|min_length[10]|max_length[15]',
+            'jabatan' => 'required'
+        ]);
+
+        if (!$validation) {
+            // Jika validasi gagal, kembali ke halaman tambah karyawan
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        // Simpan data ke database (dummy code, sesuaikan dengan model Anda)
+        $data = [
+            'nama' => $this->request->getPost('nama'),
+            'email' => $this->request->getPost('email'),
+            'telepon' => $this->request->getPost('telepon'),
+            'jabatan' => $this->request->getPost('jabatan')
+        ];
+
+        // Simpan data ke database (gunakan model)
+        // Contoh: $this->karyawanModel->save($data);
+
+        // Redirect dengan pesan sukses
+        return redirect()->to('admin/addKaryawan')->with('success', 'Karyawan berhasil ditambahkan!');
     }
 }
