@@ -93,12 +93,12 @@ class AdminController extends BaseController
     {
         $model = new UserModel();
         $users = $model->select('users.foto, users.nama, users.email, users.no_telepon, users.jabatan, users.status, 
-        hadir.id AS hadir_id, sakit.id AS sakit_id, cuti.id AS cuti_id,
-        DATE_FORMAT(waktu, "%d-%m-%Y") AS tanggal, TIME(waktu) AS jam, 
-        COALESCE(hadir.id, sakit.id, cuti.id, 0) AS absensi_status')
+        hadir.id AS hadir_id, sakit.id AS sakit_id, cuti.id AS cuti_id, tanpaketerangan.id as tanpaketerangan_id,
+        DATE_FORMAT(waktu, "%d-%m-%Y") AS tanggal, TIME(waktu) AS jam')
     ->join('hadir', 'hadir.user_id = users.id', 'left')
     ->join('sakit', 'sakit.user_id = users.id', 'left')
     ->join('cuti', 'cuti.user_id = users.id', 'left')
+    ->join('tanpaketerangan', 'tanpaketerangan.user_id = users.id', 'left')
     ->findAll();
 
 
