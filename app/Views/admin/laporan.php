@@ -26,16 +26,32 @@
         <?php if (!empty($karyawan)): ?>
             <?php 
                 $i = 1; 
+                
+                if (!empty($karyawan_tanpaKeterangan)): ?>
+                    <?php foreach ($karyawan_tanpaKeterangan as $tK): ?>
+                        <tr>
+                        <th scope="row"><?= $i++ ?></th>
+                        <td><?= esc($tK['nama']); ?></td>
+                        <td><?= esc($tK['jabatan']); ?></td>
+                        <td><a href="mailto:<?= esc($tK['email']); ?>"><?= esc($tK['email']); ?></a></td>
+                        <td><a href="https://wa.me/<?= esc($tK['no_telepon']); ?>"><?= esc($tK['no_telepon']); ?></a></td>
+                        <td><a class="btn btn-primary">Rincian</a></td>
+                        </tr>
+                    <?php endforeach ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="4">Absensi karyawan hari ini sudah selesai.</td>
+                    </tr>
+                <?php endif ?>
+
+<?php
                 foreach ($karyawan as $k): 
                     // Filter berdasarkan tanggal (menampilkan hanya yang tanggalnya sama dengan hari ini)
  // Menggunakan format yang sudah sesuai dengan query
                         // Tentukan absensi
                          // Default
 
-                         if ($k['absensi_status'] === 0) {
-                            // Tidak ada kehadiran di hadir, sakit, atau cuti, maka beri status 'Tanpa Keterangan'
-                            $k['absensi'] = 'Tanpa Keterangan';
-                        } elseif ($k['hadir_id'] !== null) {
+                          if ($k['hadir_id'] !== null) {
                             $k['absensi'] = 'Hadir';
                         } elseif ($k['sakit_id'] !== null) {
                             $k['absensi'] = 'Sakit';
