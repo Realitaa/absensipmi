@@ -25,3 +25,4 @@ $routes->get('laporan/getHarianData', 'AdminController::getHarianData');
 $routes->get('laporan/laporanBulanan', 'AdminController::laporanBulanan');
 $routes->get('admin/editKaryawan/(:num)', 'AdminController::editKaryawan/$1'); // Menampilkan form edit
 $routes->post('admin/updateKaryawan/(:num)', 'AdminController::updateKaryawan/$1'); // Memproses data update
+$routes->get('laporan/getBulananData', 'AdminController::getBulananData');

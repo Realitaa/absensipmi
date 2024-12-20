@@ -82,17 +82,22 @@ class AdminController extends BaseController
     }
 
     public function laporan()
-    {
-        $modelAbsensi = new AbsensiModel();
-        $min_date = $modelAbsensi->select("DATE_FORMAT(MIN(tanggal), '%d-%m-%Y') AS min_date")->first()['min_date'];
-        $max_date = $modelAbsensi->select("DATE_FORMAT(MAX(tanggal), '%d-%m-%Y') AS max_date")->first()['max_date'];
 
-        $data = [
-            'title' => 'Laporan Absensi',
-            'current_page' => 'laporan',
-            'min_date' => $min_date,
-            'max_date' => $max_date,
-        ];
+{
+    $modelAbsensi = new AbsensiModel();
+    $min_date = $modelAbsensi->select("DATE_FORMAT(MIN(tanggal), '%d-%m-%Y') AS min_date")->first()['min_date'];
+    $max_date = $modelAbsensi->select("DATE_FORMAT(MAX(tanggal), '%d-%m-%Y') AS max_date")->first()['max_date'];
+    $min_month = $modelAbsensi->select("DATE_FORMAT(MIN(tanggal), '%m-%Y') AS min_date")->first()['min_date'];
+    $max_month = $modelAbsensi->select("DATE_FORMAT(MAX(tanggal), '%m-%Y') AS max_date")->first()['max_date'];
+
+    $data = [
+        'title' => 'Laporan Absensi',
+        'current_page' => 'laporan',
+        'min_date' => $min_date,
+        'max_date' => $max_date,
+        'min_month' => $min_month,
+        'max_month' => $max_month,
+    ];
 
         return view('admin/laporan', $data);
     }
@@ -109,8 +114,46 @@ class AdminController extends BaseController
             ->findAll();
 
         return $this->response->setJSON($harian);
-
     }
+    
+    public function getBulananData()
+{
+    $modelAbsensi = new AbsensiModel();
+
+    // Ambil bulan dari parameter request
+    $bulan = $this->request->getVar('bulan') ?? date('m-Y', strtotime('-1 day'));
+    
+    // Query untuk mengambil data absensi
+    $bulanan = $modelAbsensi
+        ->select('u.id AS user_id, u.nama, absensi.tipe, absensi.tanggal')
+        ->join('users u', 'absensi.user_id = u.id')
+        ->where('DATE_FORMAT(absensi.tanggal, "%m-%Y")', $bulan) // Filter berdasarkan bulan
+        ->findAll();
+
+    // Format data untuk dikirimkan sebagai JSON
+    $result = [];
+    foreach ($bulanan as $row) {
+        $userId = $row['user_id'];
+        $tanggal = (int)date('d', strtotime($row['tanggal']));
+
+        if (!isset($result[$userId])) {
+            $result[$userId] = [
+                'nama' => $row['nama'],
+                'absensi' => array_fill(1, 30, ''), // Inisialisasi dengan tanggal kosong
+                'summary' => ['H' => 0, 'S' => 0, 'C' => 0, 'TK' => 0],
+            ];
+        }
+
+        // Isi data absensi dan summary
+        $result[$userId]['absensi'][$tanggal] = $row['tipe'];
+        if (isset($result[$userId]['summary'][$row['tipe']])) {
+            $result[$userId]['summary'][$row['tipe']]++;
+        }
+    }
+
+    return $this->response->setJSON(array_values($result));
+}
+
 
     // Menampilkan halaman tambah karyawan
     public function addKaryawan()
