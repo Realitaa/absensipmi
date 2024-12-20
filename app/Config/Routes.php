@@ -22,4 +22,4 @@ $routes->get('/laporan', 'AdminController::laporan');
 $routes->get('admin/addKaryawan', 'AdminController::addKaryawan'); // Menampilkan halaman tambah karyawan
 $routes->post('admin/addKaryawan', 'AdminController::saveKaryawan'); // Memproses data form tambah karyawan
 $routes->get('laporan/getHarianData', 'AdminController::getHarianData');
-$routes->get('laporan/laporanBulanan', 'AdminController::laporanBulanan');
+$routes->get('laporan/getBulananData', 'AdminController::getBulananData');
