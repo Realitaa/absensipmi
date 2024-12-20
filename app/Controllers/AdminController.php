@@ -83,18 +83,33 @@ class AdminController extends BaseController
 
     public function laporan()
 {
-    
-    // Kirimkan data ke view
+    $modelAbsensi = new AbsensiModel();
+    $min_date = $modelAbsensi->select("DATE_FORMAT(MIN(tanggal), '%d-%m-%Y') AS min_date")->first()['min_date'];
+    $max_date = $modelAbsensi->select("DATE_FORMAT(MAX(tanggal), '%d-%m-%Y') AS max_date")->first()['max_date'];
+
     $data = [
         'title' => 'Laporan Absensi',
         'current_page' => 'laporan',
-
+        'min_date' => $min_date,
+        'max_date' => $max_date,
     ];
 
     return view('admin/laporan', $data);
 }
 
+    public function getHarianData() {
+        $modelAbsensi = new AbsensiModel();
 
+        // Ambil tanggal yang dikirimkan (dari parameter request atau default ke hari sebelumnya)
+        $tanggal = $this->request->getVar('tanggal') ?? date('d-m-Y', strtotime('-1 day'));
+        $harian = $modelAbsensi->select('u.nama, u.jabatan, u.status, absensi.tipe AS kehadiran, DATE_FORMAT(absensi.tanggal, "%d-%m-%Y") AS tanggal, TIME(absensi.created_at) AS jam')
+            ->join('users u', 'absensi.user_id = u.id')
+            ->where('DATE_FORMAT(absensi.tanggal, "%d-%m-%Y")', $tanggal)
+            ->findAll();
+
+        return $this->response->setJSON($harian);
+        
+    }
 
     // Menampilkan halaman tambah karyawan
     public function addKaryawan()

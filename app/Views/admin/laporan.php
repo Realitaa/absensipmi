@@ -23,34 +23,7 @@
         </tr>
     </thead>
     <tbody id="table-body">
-        <?php if (!empty($karyawan)): ?>
-            <?php 
-                foreach ($karyawan as $k): 
-                          if ($k['hadir_id'] !== null) {
-                            $k['absensi'] = 'Hadir';
-                        } elseif ($k['sakit_id'] !== null) {
-                            $k['absensi'] = 'Sakit';
-                        } elseif ($k['cuti_id'] !== null) {
-                            $k['absensi'] = 'Cuti';
-                        } elseif ($k['tanpaketerangan_id'] !== null) {
-                            $k['absensi'] = 'Tanpa Keterangan';
-                        }
-            ?>
-            <tr>
-                <th scope="row" class="row-number"></th>
-                <td><?= esc($k['nama']); ?></td>
-                <td><?= esc($k['jabatan']); ?></td>
-                <td><?= esc($k['status']); ?></td>
-                <td><?= esc($k['absensi']); ?></td> <!-- Gunakan variabel absensi -->
-                <td><?= esc($k['tanggal']); ?></td> <!-- Menampilkan tanggal sesuai format DD-MM-YYYY -->
-                <td><?= esc($k['jam']) ? : "-"; ?></td>
-            </tr>
-            <?php endforeach; ?>
-        <?php else : ?>
-            <tr>
-                <td colspan="7">Tidak Ada Karyawan</td>
-            </tr>
-        <?php endif ?>
+        <!-- Data absensi harian diisi dari script AJAX -->
     </tbody>
 </table>
 
@@ -126,13 +99,56 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-       
 
         // Inisialisasi Flatpickr
         flatpickr('#tanggal', {
             dateFormat: 'd-m-Y',
-
+            minDate: '<?= esc($min_date); ?>',
+            maxDate: '<?= esc($max_date); ?>',
+            onChange: function(selectedDates, dateStr, instance) {
+                loadData(dateStr); // Memuat data baru saat tanggal berubah
+            }
         });
+
+        // Fungsi untuk memuat data berdasarkan tanggal yang dipilih
+        function loadData(tanggal) {
+            fetch("<?= site_url('laporan/getHarianData'); ?>?tanggal=" + tanggal)
+                .then(response => response.json())
+                .then(data => {
+                    let tableBody = document.getElementById('table-body');
+                    tableBody.innerHTML = ''; // Hapus data sebelumnya
+
+                    // Periksa jika ada data
+                    if (data.length > 0) {
+                        data.forEach((k, index) => {
+                            let row = document.createElement('tr');
+
+                            // Menambahkan data ke dalam baris
+                            row.innerHTML = `
+                                <th scope="row">${index + 1}</th>
+                                <td>${k.nama}</td>
+                                <td>${k.jabatan}</td>
+                                <td>${k.status}</td>
+                                <td>${k.kehadiran || 'Tanpa Keterangan'}</td>
+                                <td>${k.tanggal}</td>
+                                <td>${k.jam || '-'}</td>
+                            `;
+
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        let row = document.createElement('tr');
+                        row.innerHTML = '<td colspan="7">Tidak Ada data untuk tanggal ini</td>';
+                        tableBody.appendChild(row);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+        // Memuat data berdasarkan default tanggal saat halaman pertama kali dimuat
+        loadData("<?= date('d-m-Y', strtotime('-1 day')); ?>");
     });
 </script>
 
