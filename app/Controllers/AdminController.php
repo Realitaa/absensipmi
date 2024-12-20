@@ -11,50 +11,50 @@ use CodeIgniter\HTTP\ResponseInterface;
 class AdminController extends BaseController
 {
     public function dashboard()
-{
-    $modelUser = new UserModel();
-    $modelAbsensi = new AbsensiModel(); // Pastikan model ini ada
-    $today = date('Y-m-d'); // Format tanggal untuk database
+    {
+        $modelUser = new UserModel();
+        $modelAbsensi = new AbsensiModel(); // Pastikan model ini ada
+        $today = date('Y-m-d'); // Format tanggal untuk database
 
-    $karyawan_hadir = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, TIME(absensi.created_at) AS waktu')
-        ->join('users u', 'absensi.user_id = u.id')
-        ->where('tipe', 'Hadir')
-        ->where('tanggal', $today)
-        ->findAll();
+        $karyawan_hadir = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, TIME(absensi.created_at) AS waktu')
+            ->join('users u', 'absensi.user_id = u.id')
+            ->where('tipe', 'Hadir')
+            ->where('tanggal', $today)
+            ->findAll();
 
-    $karyawan_sakit = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, s.judul, s.deskripsi, s.status, absensi.created_at AS waktu')
-        ->join('sakit s', 's.absensi_id = absensi.id')
-        ->join('users u', 'absensi.user_id = u.id')
-        ->where('tipe', 'Sakit')
-        ->where('tanggal', $today)
-        ->findAll();
+        $karyawan_sakit = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, s.judul, s.deskripsi, s.status, absensi.created_at AS waktu')
+            ->join('sakit s', 's.absensi_id = absensi.id')
+            ->join('users u', 'absensi.user_id = u.id')
+            ->where('tipe', 'Sakit')
+            ->where('tanggal', $today)
+            ->findAll();
 
-    $karyawan_cuti = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, c.judul, c.deskripsi, c.status, absensi.created_at AS waktu')
-    ->join('cuti c', 'absensi.id = c.absensi_id')
-        ->join('users u', 'absensi.user_id = u.id')
-        ->where('tipe', 'Cuti')
-        ->where('tanggal', $today)
-        ->findAll();
+        $karyawan_cuti = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, c.judul, c.deskripsi, c.status, absensi.created_at AS waktu')
+            ->join('cuti c', 'absensi.id = c.absensi_id')
+            ->join('users u', 'absensi.user_id = u.id')
+            ->where('tipe', 'Cuti')
+            ->where('tanggal', $today)
+            ->findAll();
 
-    $karyawan_tanpaKeterangan = $modelUser
-        ->select('users.id AS kID, users.nama, users.jabatan, users.status, users.email, users.no_telepon')
-        ->where('NOT EXISTS (
+        $karyawan_tanpaKeterangan = $modelUser
+            ->select('users.id AS kID, users.nama, users.jabatan, users.status, users.email, users.no_telepon')
+            ->where('NOT EXISTS (
             SELECT 1 FROM absensi
             WHERE users.id = absensi.user_id 
             AND absensi.tanggal = CURDATE()
         )')
-        ->findAll();
+            ->findAll();
 
-    $data = [
-        'title' => 'Dashboard Admin',
-        'current_page' => 'dashboard',
-        'karyawan_hadir' => $karyawan_hadir,
-        'karyawan_sakit' => $karyawan_sakit,
-        'karyawan_cuti' => $karyawan_cuti,
-        'karyawan_tanpaKeterangan' => $karyawan_tanpaKeterangan,
-    ];
-    return view('admin/dashboard', $data);
-}
+        $data = [
+            'title' => 'Dashboard Admin',
+            'current_page' => 'dashboard',
+            'karyawan_hadir' => $karyawan_hadir,
+            'karyawan_sakit' => $karyawan_sakit,
+            'karyawan_cuti' => $karyawan_cuti,
+            'karyawan_tanpaKeterangan' => $karyawan_tanpaKeterangan,
+        ];
+        return view('admin/dashboard', $data);
+    }
 
 
     public function karyawan()
@@ -82,22 +82,23 @@ class AdminController extends BaseController
     }
 
     public function laporan()
-{
-    $modelAbsensi = new AbsensiModel();
-    $min_date = $modelAbsensi->select("DATE_FORMAT(MIN(tanggal), '%d-%m-%Y') AS min_date")->first()['min_date'];
-    $max_date = $modelAbsensi->select("DATE_FORMAT(MAX(tanggal), '%d-%m-%Y') AS max_date")->first()['max_date'];
+    {
+        $modelAbsensi = new AbsensiModel();
+        $min_date = $modelAbsensi->select("DATE_FORMAT(MIN(tanggal), '%d-%m-%Y') AS min_date")->first()['min_date'];
+        $max_date = $modelAbsensi->select("DATE_FORMAT(MAX(tanggal), '%d-%m-%Y') AS max_date")->first()['max_date'];
 
-    $data = [
-        'title' => 'Laporan Absensi',
-        'current_page' => 'laporan',
-        'min_date' => $min_date,
-        'max_date' => $max_date,
-    ];
+        $data = [
+            'title' => 'Laporan Absensi',
+            'current_page' => 'laporan',
+            'min_date' => $min_date,
+            'max_date' => $max_date,
+        ];
 
-    return view('admin/laporan', $data);
-}
+        return view('admin/laporan', $data);
+    }
 
-    public function getHarianData() {
+    public function getHarianData()
+    {
         $modelAbsensi = new AbsensiModel();
 
         // Ambil tanggal yang dikirimkan (dari parameter request atau default ke hari sebelumnya)
@@ -108,13 +109,17 @@ class AdminController extends BaseController
             ->findAll();
 
         return $this->response->setJSON($harian);
-        
+
     }
 
     // Menampilkan halaman tambah karyawan
     public function addKaryawan()
     {
-        return view('addKaryawan'); // Pastikan file addKaryawan.php ada di Views
+        $data = [
+            'title' => 'Tambah Karyawan',
+            'current_page' => 'karyawan',
+        ];
+        return view('admin/addKaryawan', $data              ); // Pastikan file addKaryawan.php ada di Views
     }
 
     // Memproses data form tambah karyawan
@@ -146,5 +151,54 @@ class AdminController extends BaseController
 
         // Redirect dengan pesan sukses
         return redirect()->to('admin/addKaryawan')->with('success', 'Karyawan berhasil ditambahkan!');
+    }
+
+    // Menampilkan halaman edit karyawan
+    public function editKaryawan($id)
+    {
+        // Ambil data karyawan berdasarkan ID (gunakan model)
+        // Contoh: $karyawan = $this->karyawanModel->find($id);
+        $karyawan = [
+            'id' => $id,
+            'nama' => 'John Doe',
+            'email' => 'johndoe@example.com',
+            'telepon' => '081234567890',
+            'jabatan' => 'Staff'
+        ];
+
+        // Kirim data ke view
+        return view('editKaryawan', ['karyawan' => $karyawan]);
+    }
+
+    // Memproses data update karyawan
+    public function updateKaryawan($id)
+    {
+        // Validasi data form
+        $validation = $this->validate([
+            'nama' => 'required|min_length[3]|max_length[50]',
+            'email' => 'required|valid_email',
+            'telepon' => 'required|numeric|min_length[10]|max_length[15]',
+            'jabatan' => 'required'
+        ]);
+
+        if (!$validation) {
+            // Jika validasi gagal, kembali ke halaman edit
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        // Ambil data dari form
+        $data = [
+            'id' => $id,
+            'nama' => $this->request->getPost('nama'),
+            'email' => $this->request->getPost('email'),
+            'telepon' => $this->request->getPost('telepon'),
+            'jabatan' => $this->request->getPost('jabatan')
+        ];
+
+        // Update data ke database (dummy code, sesuaikan dengan model Anda)
+        // Contoh: $this->karyawanModel->update($id, $data);
+
+        // Redirect dengan pesan sukses
+        return redirect()->to('admin/karyawanList')->with('success', 'Data karyawan berhasil diperbarui!');
     }
 }

@@ -5,6 +5,9 @@
 <div class="bg-light">
     <div id="table-container" class="p-3">
         <h3 class="text-center">Tabel Admin</h3>
+        <div>
+        <button><a href="/addKaryawan">Tambah</a></button>
+        </div>                  
         <table class="table table-bordered table-striped text-center align-middle">
         <thead>
             <tr>
