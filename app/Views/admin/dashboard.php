@@ -231,7 +231,7 @@ function showTable(status) {
                         <?php foreach ($karyawan_tanpaKeterangan as $tK): ?>
                             <tr>
                             <th scope="row"><?= $i++ ?></th>
-                            <td><a href="karyawan/"<?= esc($kehadiran['kID']); ?>><?= esc($kehadiran['nama']); ?></a></td>
+                            <td><a href="karyawan/"<?= esc($tK['kID']); ?>><?= esc($tK['nama']); ?></a></td>
                             <td><?= esc($tK['jabatan']); ?></td>
                             <td><a href="mailto:<?= esc($tK['email']); ?>"><?= esc($tK['email']); ?></a></td>
                             <td><a href="https://wa.me/<?= esc($tK['no_telepon']); ?>"><?= esc($tK['no_telepon']); ?></a></td>
