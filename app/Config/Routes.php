@@ -33,6 +33,12 @@ $routes->post('/karyawan/update/(:num)', 'AdminController::updateKaryawan/$1');
 // Routes Admin : Menu Admin
 $routes->get('/admin', 'AdminController::admin');
 $routes->get('/admin/add', 'AdminController::addAdmin');
+$routes->post('/admin/save', 'AdminController::saveAdmin');
+// Menu Admin : Edit Admin
+$routes->get('/admin/edit/(:num)', 'AdminController::editAdmin/$1'); 
+$routes->post('/admin/delete/(:num)', 'AdminController::deleteAdmin/$1'); 
+$routes->post('/admin/status/(:num)', 'AdminController::statusAdmin/$1');
+$routes->post('/admin/update/(:num)', 'AdminController::updateAdmin/$1'); 
 
 // Routes Admin : Menu Laporan
 $routes->get('/laporan', 'AdminController::laporan');

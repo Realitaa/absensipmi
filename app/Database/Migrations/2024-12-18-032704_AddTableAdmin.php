@@ -20,11 +20,15 @@ class AddTableAdmins extends Migration
                 'constraint' => 50,
                 'null'       => false,
             ],
+            'nama_pengguna' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 50,
+                'null'       => false,
+            ],
             'email' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 100,
                 'null'       => false,
-                'unique'     => true,
             ],
             'no_telepon' => [
                 'type'       => 'VARCHAR',

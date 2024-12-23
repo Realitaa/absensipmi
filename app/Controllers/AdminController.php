@@ -42,8 +42,8 @@ class AdminController extends BaseController
             ->where('NOT EXISTS (
             SELECT 1 FROM absensi
             WHERE users.id = absensi.user_id 
-            AND absensi.tanggal = CURDATE()
-        )')
+            AND absensi.tanggal = CURDATE())')
+            ->where('users.status = "aktif"')
             ->findAll();
 
         $data = [
@@ -125,6 +125,7 @@ class AdminController extends BaseController
             'title' => 'Edit ' . $karyawan['nama'],
             'current_page' => 'karyawan',
             'karyawan' => $karyawan,
+            'isAdmin' => false
         ];
 
         // Kirim data ke view
@@ -239,7 +240,7 @@ class AdminController extends BaseController
         ]);
 
         if (!$validation) {
-            // Jika validasi gagal, kembali ke halaman tambah karyawan
+            // Jika validasi gagal, kembali ke halaman tambah admin
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
@@ -260,22 +261,23 @@ class AdminController extends BaseController
         }
     }
 
-    // Menampilkan halaman edit karyawan
+    // Menampilkan halaman edit admin
     public function editAdmin($id)
     {
         $model = new AdminModel();
-        $karyawan = $model->find($id);
+        $admin = $model->find($id);
         $data = [
-            'title' => 'Edit ' . $karyawan['nama'],
+            'title' => 'Edit ' . $admin['nama'],
             'current_page' => 'karyawan',
-            'karyawan' => $karyawan,
+            'admin' => $admin,
+            'isAdmin' => true
         ];
 
         // Kirim data ke view
-        return view('admin/editKaryawan', $data);
+        return view('admin/editAdmin', $data);
     }
 
-    // Memproses data update karyawan
+    // Memproses data update admin
     public function updateAdmin($id)
     {
         $model = new AdminModel();
@@ -283,8 +285,8 @@ class AdminController extends BaseController
         $validation = $this->validate([
             'nama_lengkap' => 'required|min_length[3]|max_length[50]',
             'nama_pengguna' => 'required|min_length[3]|max_length[50]',
-            'email' => 'valid_email',
-            'telepon' => 'numeric|min_length[10]|max_length[15]',
+            'email' => 'required|valid_email',
+            'telepon' => 'required|numeric|min_length[10]|max_length[15]',
         ]);
         
         if (!$validation) {

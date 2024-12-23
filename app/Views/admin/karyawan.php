@@ -28,7 +28,7 @@
                     $i = 1; 
                     foreach ($karyawan as $k): 
                     ?>
-                    <tr>
+                    <tr class="<?= (esc($k['status']) == 'nonaktif') ? 'table-warning' : ''; ?>">
                         <th scope="row"><?= $i++; ?></th>
                         <td>
                             <?php if (!empty($k['foto'])): ?>
