@@ -110,9 +110,9 @@ class AdminController extends BaseController
         $inserted = $model->insert( $data);
 
         if ($inserted) {
-            return redirect()->to('/karyawan')->with('success', 'Data karyawan berhasil diperbarui!');
+            return redirect()->to('/karyawan')->with('success', 'Karyawan baru ditambahkan!');
         } else {
-            return redirect()->to('/karyawan')->with('error', 'Data karyawan gagal diperbarui!');
+            return redirect()->to('/karyawan')->with('error', 'Gagal menambahkan karyawan!');
         }
     }
 
@@ -198,9 +198,9 @@ class AdminController extends BaseController
         $deleted = $model->delete($id);
 
         if ($deleted) {
-            return redirect()->to('/karyawan')->with('success', 'Data karyawan berhasil dihapus!');
+            return redirect()->to('/karyawan')->with('success', 'Karyawan berhasil dihapus!');
         } else {
-            return redirect()->to('/karyawan')->with('error', 'Data karyawan gagal dihapus!');
+            return redirect()->to('/karyawan')->with('error', 'Karyawan gagal dihapus!');
         }
     }
 
@@ -219,8 +219,6 @@ class AdminController extends BaseController
     
     public function addAdmin()
     {
-        $model = new AdminModel();
-        $admins = $model->findAll();
         $data = [
             'title' => 'Add Admin',
             'current_page' => 'admin',
@@ -228,17 +226,16 @@ class AdminController extends BaseController
         return view('admin/addAdmin', $data);
     }
 
-    // Memproses data form tambah karyawan
-    public function saveKaryawan()
+    // Memproses data form tambah admin
+    public function saveAdmin()
     {
-        $model = new UserModel();
+        $model = new AdminModel();
         // Validasi data form
         $validation = $this->validate([
             'nama_lengkap' => 'required|min_length[3]|max_length[50]',
             'nama_pengguna' => 'required|min_length[3]|max_length[50]',
             'email' => 'valid_email',
             'telepon' => 'numeric|min_length[10]|max_length[15]',
-            'jabatan' => 'required'
         ]);
 
         if (!$validation) {
@@ -252,22 +249,21 @@ class AdminController extends BaseController
             'nama_pengguna' => $this->request->getPost('nama_pengguna'),
             'email' => $this->request->getPost('email'),
             'no_telepon' => $this->request->getPost('telepon'),
-            'jabatan' => $this->request->getPost('jabatan')
         ];
         // Simpan data ke database
         $inserted = $model->insert( $data);
 
         if ($inserted) {
-            return redirect()->to('/karyawan')->with('success', 'Data karyawan berhasil diperbarui!');
+            return redirect()->to('/admin')->with('success', 'Admin baru ditambahkan!');
         } else {
-            return redirect()->to('/karyawan')->with('error', 'Data karyawan gagal diperbarui!');
+            return redirect()->to('/admin')->with('error', 'Gagal menambahkan admin baru!');
         }
     }
 
     // Menampilkan halaman edit karyawan
-    public function editKaryawan($id)
+    public function editAdmin($id)
     {
-        $model = new UserModel();
+        $model = new AdminModel();
         $karyawan = $model->find($id);
         $data = [
             'title' => 'Edit ' . $karyawan['nama'],
@@ -280,16 +276,15 @@ class AdminController extends BaseController
     }
 
     // Memproses data update karyawan
-    public function updateKaryawan($id)
+    public function updateAdmin($id)
     {
-        $model = new UserModel();
+        $model = new AdminModel();
 
         $validation = $this->validate([
             'nama_lengkap' => 'required|min_length[3]|max_length[50]',
             'nama_pengguna' => 'required|min_length[3]|max_length[50]',
             'email' => 'valid_email',
             'telepon' => 'numeric|min_length[10]|max_length[15]',
-            'jabatan' => 'required'
         ]);
         
         if (!$validation) {
@@ -303,20 +298,19 @@ class AdminController extends BaseController
             'nama_pengguna' => $this->request->getPost('nama_pengguna'),
             'email' => $this->request->getPost('email'),
             'no_telepon' => $this->request->getPost('telepon'),
-            'jabatan' => $this->request->getPost('jabatan')
         ];
         
         $updated = $model->update($id, $data);
 
         if ($updated) {
-            return redirect()->to('/karyawan')->with('success', 'Data karyawan berhasil diperbarui!');
+            return redirect()->to('/admin')->with('success', 'Data admin berhasil diperbarui!');
         } else {
-            return redirect()->to('/karyawan')->with('error', 'Data karyawan gagal diperbarui!');
+            return redirect()->to('/admin')->with('error', 'Data admin gagal diperbarui!');
         }
     }
 
-    public function statusKaryawan($id) {
-        $model = new UserModel();
+    public function statusAdmin($id) {
+        $model = new AdminModel();
         $username = $model->select('nama')->find($id);
         $nonactive = false;
         $active = false;
@@ -334,21 +328,21 @@ class AdminController extends BaseController
         
 
         if ($nonactive || $active) {
-            return redirect()->to('/karyawan')->with('success', 'Karyawan ' . $username['nama'] . ' berhasil ' . $status);
+            return redirect()->to('/admin')->with('success', 'Admin ' . $username['nama'] . ' berhasil ' . $status);
         } else {
-            return redirect()->to('/karyawan')->with('error', 'Karyawan ' . $username['nama'] . ' gagal ' . $status);
+            return redirect()->to('/admin')->with('error', 'Admin ' . $username['nama'] . ' gagal ' . $status);
         }
     }
     
-    public function deleteKaryawan($id) {
-        $model = new UserModel();
+    public function deleteAdmin($id) {
+        $model = new AdminModel();
 
         $deleted = $model->delete($id);
 
         if ($deleted) {
-            return redirect()->to('/karyawan')->with('success', 'Data karyawan berhasil dihapus!');
+            return redirect()->to('/admin')->with('success', 'Admin berhasil dihapus!');
         } else {
-            return redirect()->to('/karyawan')->with('error', 'Data karyawan gagal dihapus!');
+            return redirect()->to('/admin')->with('error', 'Admin gagal dihapus!');
         }
     }
 
