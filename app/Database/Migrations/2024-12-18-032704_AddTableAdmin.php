@@ -31,11 +31,6 @@ class AddTableAdmins extends Migration
                 'constraint' => 15,
                 'null'       => true,
             ],
-            'jabatan' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 20,
-                'null'       => true,
-            ],
             'status' => [
                 'type'       => 'ENUM',
                 'constraint' => ['aktif', 'nonaktif'],

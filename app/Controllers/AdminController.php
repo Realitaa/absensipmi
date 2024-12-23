@@ -10,11 +10,12 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class AdminController extends BaseController
 {
+    // Method untuk Menu Dashboard
     public function dashboard()
     {
         $modelUser = new UserModel();
-        $modelAbsensi = new AbsensiModel(); // Pastikan model ini ada
-        $today = date('Y-m-d'); // Format tanggal untuk database
+        $modelAbsensi = new AbsensiModel();
+        $today = date('Y-m-d');
 
         $karyawan_hadir = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, TIME(absensi.created_at) AS waktu')
             ->join('users u', 'absensi.user_id = u.id')
@@ -56,7 +57,7 @@ class AdminController extends BaseController
         return view('admin/dashboard', $data);
     }
 
-
+    // Method untuk Menu Karyawan
     public function karyawan()
     {
         $model = new UserModel();
@@ -69,37 +70,309 @@ class AdminController extends BaseController
         return view('admin/karyawan', $data);
     }
 
+    // Menampilkan halaman tambah karyawan
+    public function addKaryawan()
+    {
+        $data = [
+            'title' => 'Tambah Karyawan',
+            'current_page' => 'karyawan',
+        ];
+        return view('admin/addKaryawan', $data); // Pastikan file addKaryawan.php ada di Views
+    }
+
+    // Memproses data form tambah karyawan
+    public function saveKaryawan()
+    {
+        $model = new UserModel();
+        // Validasi data form
+        $validation = $this->validate([
+            'nama_lengkap' => 'required|min_length[3]|max_length[50]',
+            'nama_pengguna' => 'required|min_length[3]|max_length[50]',
+            'email' => 'valid_email',
+            'telepon' => 'numeric|min_length[10]|max_length[15]',
+            'jabatan' => 'required'
+        ]);
+
+        if (!$validation) {
+            // Jika validasi gagal, kembali ke halaman tambah karyawan
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        // Ambil data dari form
+        $data = [
+            'nama' => $this->request->getPost('nama_lengkap'),
+            'nama_pengguna' => $this->request->getPost('nama_pengguna'),
+            'email' => $this->request->getPost('email'),
+            'no_telepon' => $this->request->getPost('telepon'),
+            'jabatan' => $this->request->getPost('jabatan')
+        ];
+        // Simpan data ke database
+        $inserted = $model->insert( $data);
+
+        if ($inserted) {
+            return redirect()->to('/karyawan')->with('success', 'Data karyawan berhasil diperbarui!');
+        } else {
+            return redirect()->to('/karyawan')->with('error', 'Data karyawan gagal diperbarui!');
+        }
+    }
+
+    // Menampilkan halaman edit karyawan
+    public function editKaryawan($id)
+    {
+        $model = new UserModel();
+        $karyawan = $model->find($id);
+        $data = [
+            'title' => 'Edit ' . $karyawan['nama'],
+            'current_page' => 'karyawan',
+            'karyawan' => $karyawan,
+        ];
+
+        // Kirim data ke view
+        return view('admin/editKaryawan', $data);
+    }
+
+    // Memproses data update karyawan
+    public function updateKaryawan($id)
+    {
+        $model = new UserModel();
+
+        $validation = $this->validate([
+            'nama_lengkap' => 'required|min_length[3]|max_length[50]',
+            'nama_pengguna' => 'required|min_length[3]|max_length[50]',
+            'email' => 'valid_email',
+            'telepon' => 'numeric|min_length[10]|max_length[15]',
+            'jabatan' => 'required'
+        ]);
+        
+        if (!$validation) {
+            // Jika validasi gagal, kembali ke halaman edit
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        // Ambil data dari form
+        $data = [
+            'nama' => $this->request->getPost('nama_lengkap'),
+            'nama_pengguna' => $this->request->getPost('nama_pengguna'),
+            'email' => $this->request->getPost('email'),
+            'no_telepon' => $this->request->getPost('telepon'),
+            'jabatan' => $this->request->getPost('jabatan')
+        ];
+        
+        $updated = $model->update($id, $data);
+
+        if ($updated) {
+            return redirect()->to('/karyawan')->with('success', 'Data karyawan berhasil diperbarui!');
+        } else {
+            return redirect()->to('/karyawan')->with('error', 'Data karyawan gagal diperbarui!');
+        }
+    }
+
+    public function statusKaryawan($id) {
+        $model = new UserModel();
+        $username = $model->select('nama')->find($id);
+        $nonactive = false;
+        $active = false;
+
+        $action = $this->request->getPost('action');
+        if ($action == 'active') {
+            $nonactive = $model->update($id, ['status' => 'aktif']);
+            $status = 'diaktifkan!';
+        } elseif ($action == 'nonactive') {
+            $active = $model->update($id, ['status' => 'nonaktif']);
+            $status = 'dinonaktifkan!';
+        } else {
+            return redirect()->back()->with('error', 'Aksi tidak dikenali. Coba refresh halaman.');
+        }
+        
+
+        if ($nonactive || $active) {
+            return redirect()->to('/karyawan')->with('success', 'Karyawan ' . $username['nama'] . ' berhasil ' . $status);
+        } else {
+            return redirect()->to('/karyawan')->with('error', 'Karyawan ' . $username['nama'] . ' gagal ' . $status);
+        }
+    }
+    
+    public function deleteKaryawan($id) {
+        $model = new UserModel();
+
+        $deleted = $model->delete($id);
+
+        if ($deleted) {
+            return redirect()->to('/karyawan')->with('success', 'Data karyawan berhasil dihapus!');
+        } else {
+            return redirect()->to('/karyawan')->with('error', 'Data karyawan gagal dihapus!');
+        }
+    }
+
+    // Method untuk Menu Admin
     public function admin()
     {
         $model = new AdminModel();
         $admins = $model->findAll();
         $data = [
-            'title' => 'Karyawan PMI',
+            'title' => 'Admin Absensi PMI',
             'current_page' => 'admin',
             'admins' => $admins,
         ];
         return view('admin/admin', $data);
     }
+    
+    public function addAdmin()
+    {
+        $model = new AdminModel();
+        $admins = $model->findAll();
+        $data = [
+            'title' => 'Add Admin',
+            'current_page' => 'admin',
+        ];
+        return view('admin/addAdmin', $data);
+    }
 
+    // Memproses data form tambah karyawan
+    public function saveKaryawan()
+    {
+        $model = new UserModel();
+        // Validasi data form
+        $validation = $this->validate([
+            'nama_lengkap' => 'required|min_length[3]|max_length[50]',
+            'nama_pengguna' => 'required|min_length[3]|max_length[50]',
+            'email' => 'valid_email',
+            'telepon' => 'numeric|min_length[10]|max_length[15]',
+            'jabatan' => 'required'
+        ]);
+
+        if (!$validation) {
+            // Jika validasi gagal, kembali ke halaman tambah karyawan
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        // Ambil data dari form
+        $data = [
+            'nama' => $this->request->getPost('nama_lengkap'),
+            'nama_pengguna' => $this->request->getPost('nama_pengguna'),
+            'email' => $this->request->getPost('email'),
+            'no_telepon' => $this->request->getPost('telepon'),
+            'jabatan' => $this->request->getPost('jabatan')
+        ];
+        // Simpan data ke database
+        $inserted = $model->insert( $data);
+
+        if ($inserted) {
+            return redirect()->to('/karyawan')->with('success', 'Data karyawan berhasil diperbarui!');
+        } else {
+            return redirect()->to('/karyawan')->with('error', 'Data karyawan gagal diperbarui!');
+        }
+    }
+
+    // Menampilkan halaman edit karyawan
+    public function editKaryawan($id)
+    {
+        $model = new UserModel();
+        $karyawan = $model->find($id);
+        $data = [
+            'title' => 'Edit ' . $karyawan['nama'],
+            'current_page' => 'karyawan',
+            'karyawan' => $karyawan,
+        ];
+
+        // Kirim data ke view
+        return view('admin/editKaryawan', $data);
+    }
+
+    // Memproses data update karyawan
+    public function updateKaryawan($id)
+    {
+        $model = new UserModel();
+
+        $validation = $this->validate([
+            'nama_lengkap' => 'required|min_length[3]|max_length[50]',
+            'nama_pengguna' => 'required|min_length[3]|max_length[50]',
+            'email' => 'valid_email',
+            'telepon' => 'numeric|min_length[10]|max_length[15]',
+            'jabatan' => 'required'
+        ]);
+        
+        if (!$validation) {
+            // Jika validasi gagal, kembali ke halaman edit
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        // Ambil data dari form
+        $data = [
+            'nama' => $this->request->getPost('nama_lengkap'),
+            'nama_pengguna' => $this->request->getPost('nama_pengguna'),
+            'email' => $this->request->getPost('email'),
+            'no_telepon' => $this->request->getPost('telepon'),
+            'jabatan' => $this->request->getPost('jabatan')
+        ];
+        
+        $updated = $model->update($id, $data);
+
+        if ($updated) {
+            return redirect()->to('/karyawan')->with('success', 'Data karyawan berhasil diperbarui!');
+        } else {
+            return redirect()->to('/karyawan')->with('error', 'Data karyawan gagal diperbarui!');
+        }
+    }
+
+    public function statusKaryawan($id) {
+        $model = new UserModel();
+        $username = $model->select('nama')->find($id);
+        $nonactive = false;
+        $active = false;
+
+        $action = $this->request->getPost('action');
+        if ($action == 'active') {
+            $nonactive = $model->update($id, ['status' => 'aktif']);
+            $status = 'diaktifkan!';
+        } elseif ($action == 'nonactive') {
+            $active = $model->update($id, ['status' => 'nonaktif']);
+            $status = 'dinonaktifkan!';
+        } else {
+            return redirect()->back()->with('error', 'Aksi tidak dikenali. Coba refresh halaman.');
+        }
+        
+
+        if ($nonactive || $active) {
+            return redirect()->to('/karyawan')->with('success', 'Karyawan ' . $username['nama'] . ' berhasil ' . $status);
+        } else {
+            return redirect()->to('/karyawan')->with('error', 'Karyawan ' . $username['nama'] . ' gagal ' . $status);
+        }
+    }
+    
+    public function deleteKaryawan($id) {
+        $model = new UserModel();
+
+        $deleted = $model->delete($id);
+
+        if ($deleted) {
+            return redirect()->to('/karyawan')->with('success', 'Data karyawan berhasil dihapus!');
+        } else {
+            return redirect()->to('/karyawan')->with('error', 'Data karyawan gagal dihapus!');
+        }
+    }
+
+    // Method untuk Menu Laporan
     public function laporan()
+    {
+        $modelAbsensi = new AbsensiModel();
 
-{
-    $modelAbsensi = new AbsensiModel();
-    $min_date = $modelAbsensi->select("DATE_FORMAT(MIN(tanggal), '%d-%m-%Y') AS min_date")->first()['min_date'];
-    $max_date = $modelAbsensi->select("DATE_FORMAT(MAX(tanggal), '%d-%m-%Y') AS max_date")->first()['max_date'];
-    $min_month = $modelAbsensi->select("DATE_FORMAT(MIN(tanggal), '%m-%Y') AS min_date")->first()['min_date'];
-    $max_month = $modelAbsensi->select("DATE_FORMAT(MAX(tanggal), '%m-%Y') AS max_date")->first()['max_date'];
+        // Variabel min dan max waktu untuk filter
+        $min_date = $modelAbsensi->select("DATE_FORMAT(MIN(tanggal), '%d-%m-%Y') AS min_date")->first()['min_date'];
+        $max_date = $modelAbsensi->select("DATE_FORMAT(MAX(tanggal), '%d-%m-%Y') AS max_date")->first()['max_date'];
+        $min_month = $modelAbsensi->select("DATE_FORMAT(MIN(tanggal), '%m-%Y') AS min_date")->first()['min_date'];
+        $max_month = $modelAbsensi->select("DATE_FORMAT(MAX(tanggal), '%m-%Y') AS max_date")->first()['max_date'];
 
-    $data = [
-        'title' => 'Laporan Absensi',
-        'current_page' => 'laporan',
-        'min_date' => $min_date,
-        'max_date' => $max_date,
-        'min_month' => $min_month,
-        'max_month' => $max_month,
-    ];
+        $data = [
+            'title' => 'Laporan Absensi',
+            'current_page' => 'laporan',
+            'min_date' => $min_date,
+            'max_date' => $max_date,
+            'min_month' => $min_month,
+            'max_month' => $max_month,
+        ];
 
-        return view('admin/laporan', $data);
+            return view('admin/laporan', $data);
     }
 
     public function getHarianData()
@@ -117,131 +390,36 @@ class AdminController extends BaseController
     }
     
     public function getBulananData()
-{
-    $modelAbsensi = new AbsensiModel();
-
-    // Ambil bulan dari parameter request
-    $bulan = $this->request->getVar('bulan') ?? date('m-Y', strtotime('-1 day'));
-    
-    // Query untuk mengambil data absensi
-    $bulanan = $modelAbsensi
-        ->select('u.id AS user_id, u.nama, absensi.tipe, absensi.tanggal')
-        ->join('users u', 'absensi.user_id = u.id')
-        ->where('DATE_FORMAT(absensi.tanggal, "%m-%Y")', $bulan) // Filter berdasarkan bulan
-        ->findAll();
-
-    // Format data untuk dikirimkan sebagai JSON
-    $result = [];
-    foreach ($bulanan as $row) {
-        $userId = $row['user_id'];
-        $tanggal = (int)date('d', strtotime($row['tanggal']));
-
-        if (!isset($result[$userId])) {
-            $result[$userId] = [
-                'nama' => $row['nama'],
-                'absensi' => array_fill(1, 30, ''), // Inisialisasi dengan tanggal kosong
-                'summary' => ['H' => 0, 'S' => 0, 'C' => 0, 'TK' => 0],
-            ];
-        }
-
-        // Isi data absensi dan summary
-        $result[$userId]['absensi'][$tanggal] = $row['tipe'];
-        if (isset($result[$userId]['summary'][$row['tipe']])) {
-            $result[$userId]['summary'][$row['tipe']]++;
-        }
-    }
-
-    return $this->response->setJSON(array_values($result));
-}
-
-
-    // Menampilkan halaman tambah karyawan
-    public function addKaryawan()
     {
-        $data = [
-            'title' => 'Tambah Karyawan',
-            'current_page' => 'karyawan',
-        ];
-        return view('admin/addKaryawan', $data              ); // Pastikan file addKaryawan.php ada di Views
-    }
+        $modelAbsensi = new AbsensiModel();
+        // Ambil bulan yang dikirimkan (dari parameter request atau default ke bulan sebelumnya)
+        $bulan = $this->request->getVar('bulan') ?? date('m-Y', strtotime('-1 day'));
+        
+        $bulanan = $modelAbsensi
+            ->select('u.id AS user_id, u.nama, absensi.tipe, absensi.tanggal')
+            ->join('users u', 'absensi.user_id = u.id')
+            ->where('DATE_FORMAT(absensi.tanggal, "%m-%Y")', $bulan) 
+            ->findAll();
 
-    // Memproses data form tambah karyawan
-    public function saveKaryawan()
-    {
-        // Validasi data form
-        $validation = $this->validate([
-            'nama' => 'required|min_length[3]|max_length[50]',
-            'email' => 'required|valid_email',
-            'telepon' => 'required|numeric|min_length[10]|max_length[15]',
-            'jabatan' => 'required'
-        ]);
+        $result = [];
+        foreach ($bulanan as $row) {
+            $userId = $row['user_id'];
+            $tanggal = (int)date('d', strtotime($row['tanggal']));
 
-        if (!$validation) {
-            // Jika validasi gagal, kembali ke halaman tambah karyawan
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            if (!isset($result[$userId])) {
+                $result[$userId] = [
+                    'nama' => $row['nama'],
+                    'absensi' => array_fill(1, 30, ''),
+                    'summary' => ['H' => 0, 'S' => 0, 'C' => 0, 'TK' => 0],
+                ];
+            }
+
+            // Isi data absensi dan summary
+            $result[$userId]['absensi'][$tanggal] = $row['tipe'];
+            if (isset($result[$userId]['summary'][$row['tipe']])) {
+                $result[$userId]['summary'][$row['tipe']]++;
+            }
         }
-
-        // Simpan data ke database (dummy code, sesuaikan dengan model Anda)
-        $data = [
-            'nama' => $this->request->getPost('nama'),
-            'email' => $this->request->getPost('email'),
-            'telepon' => $this->request->getPost('telepon'),
-            'jabatan' => $this->request->getPost('jabatan')
-        ];
-
-        // Simpan data ke database (gunakan model)
-        // Contoh: $this->karyawanModel->save($data);
-
-        // Redirect dengan pesan sukses
-        return redirect()->to('admin/addKaryawan')->with('success', 'Karyawan berhasil ditambahkan!');
-    }
-
-    // Menampilkan halaman edit karyawan
-    public function editKaryawan($id)
-    {
-        // Ambil data karyawan berdasarkan ID (gunakan model)
-        // Contoh: $karyawan = $this->karyawanModel->find($id);
-        $karyawan = [
-            'id' => $id,
-            'nama' => 'John Doe',
-            'email' => 'johndoe@example.com',
-            'telepon' => '081234567890',
-            'jabatan' => 'Staff'
-        ];
-
-        // Kirim data ke view
-        return view('editKaryawan', ['karyawan' => $karyawan]);
-    }
-
-    // Memproses data update karyawan
-    public function updateKaryawan($id)
-    {
-        // Validasi data form
-        $validation = $this->validate([
-            'nama' => 'required|min_length[3]|max_length[50]',
-            'email' => 'required|valid_email',
-            'telepon' => 'required|numeric|min_length[10]|max_length[15]',
-            'jabatan' => 'required'
-        ]);
-
-        if (!$validation) {
-            // Jika validasi gagal, kembali ke halaman edit
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-        }
-
-        // Ambil data dari form
-        $data = [
-            'id' => $id,
-            'nama' => $this->request->getPost('nama'),
-            'email' => $this->request->getPost('email'),
-            'telepon' => $this->request->getPost('telepon'),
-            'jabatan' => $this->request->getPost('jabatan')
-        ];
-
-        // Update data ke database (dummy code, sesuaikan dengan model Anda)
-        // Contoh: $this->karyawanModel->update($id, $data);
-
-        // Redirect dengan pesan sukses
-        return redirect()->to('admin/karyawanList')->with('success', 'Data karyawan berhasil diperbarui!');
+        return $this->response->setJSON(array_values($result));
     }
 }

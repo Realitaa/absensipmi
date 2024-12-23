@@ -11,7 +11,7 @@
 <style>
     body {
         margin: 20px;
-        background-image: url(WebBG.jpg);
+        background-image: url(<?= base_url('WebBG.jpg'); ?>);
         background-repeat: no-repeat;
         background-size: cover;
         background-attachment: fixed;
@@ -35,22 +35,50 @@
                         <a class="nav-link <?= ($current_page === 'dashboard') ? 'active' : ''; ?>" href="/dashboard">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?= ($current_page === 'karyawan') ? 'active' : ''; ?>" href="/managekaryawan">Karyawan</a>
+                        <a class="nav-link <?= ($current_page === 'karyawan') ? 'active' : ''; ?>" href="/karyawan">Karyawan</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link <?= ($current_page === 'admin') ? 'active' : ''; ?>" href="/admin">Admin</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?= ($current_page === 'laporan') ? 'active' : ''; ?>" href="laporan">Laporan</a>
+                        <a class="nav-link <?= ($current_page === 'laporan') ? 'active' : ''; ?>" href="/laporan">Laporan</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
+    <div class="bg-light">
+        <?php if (session()->getFlashdata('success')): ?>
+            <div id="flash-message" class="alert alert-success mx-3">
+                <?= session()->getFlashdata('success'); ?>
+            </div>
+        <?php endif; ?>
 
-    <?= $this->renderSection('content') ?>
+        <?php if (session()->getFlashdata('error')): ?>
+            <div id="flash-message" class="alert alert-danger m-3">
+                <?= session()->getFlashdata('error'); ?>
+            </div>
+        <?php endif; ?>
+        <?= $this->renderSection('content') ?>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+    // Menampilkan pesan dengan animasi
+    window.addEventListener('DOMContentLoaded', (event) => {
+            const flashMessage = document.getElementById('flash-message');
+            if (flashMessage) {
+                // Tambahkan kelas show untuk animasi masuk
+                flashMessage.classList.add('show');
+
+                // Hapus pesan setelah beberapa detik
+                setTimeout(() => {
+                    flashMessage.classList.remove('show');
+                    setTimeout(() => flashMessage.remove(), 500); // Hapus elemen setelah animasi keluar
+                }, 3000); // Durasi 3 detik
+            }
+        });
+    </script>
 </body>
 
 </html>

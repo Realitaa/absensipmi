@@ -2,15 +2,19 @@
 
 <?= $this->section('content'); ?>
 
-<div class="bg-light">
     <div id="table-container" class="p-3">
         <h3 class="text-center">Tabel Karyawan</h3>
-        <table class="table table-bordered table-striped text-center align-middle">
+        <div class="d-flex justify-content-between align-items-center">
+            <a class="btn btn-primary my-2" href="/karyawan/add">Tambah</a> 
+            <input class="form-control w-auto " type="search" placeholder="Search" aria-label="Search" id="search-input">
+        </div>
+        <table class="table table-bordered table-striped text-center align-middle" id="karyawan-table">
         <thead>
             <tr>
             <th scope="col" width="10px">No.</th>
             <th scope="col">Profil</th>
             <th scope="col">Nama</th>
+            <th scope="col">Nama Pengguna</th>
             <th scope="col">Email</th>
             <th scope="col">No Telepon</th>
             <th scope="col">Jabatan</th>
@@ -34,11 +38,12 @@
                             <?php endif; ?>
                         </td>
                         <td><?= esc($k['nama']); ?></td>
+                        <td><?= esc($k['nama_pengguna']); ?></td>
                         <td><?= esc($k['email']); ?></td>
                         <td><?= esc($k['no_telepon']); ?></td>
                         <td><?= esc($k['jabatan']); ?></td>
                         <td><?= esc($k['status']); ?></td>
-                        <td><a href="#" class="btn btn-primary">Aksi</a></td>
+                        <td><a href="/karyawan/edit/<?= $k['id']; ?>" class="btn btn-info">Edit</a></td>
                     </tr>
                 <?php endforeach; ?>
             <?php else : ?>
@@ -47,6 +52,32 @@
         </tbody>
         </table>
     </div>
-</div>
+
+<script>
+    // Skrip untuk mencari data di dalam tabel berdasarkan query pada elemen input search
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('search-input');
+        const table = document.getElementById('karyawan-table');
+        const rows = table.querySelectorAll('tbody tr');
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.toLowerCase();
+
+            rows.forEach(row => {
+                // Gabungkan semua teks dalam satu baris menjadi satu string
+                const rowText = Array.from(row.querySelectorAll('td, th'))
+                    .map(cell => cell.textContent.toLowerCase())
+                    .join(' ');
+
+                // Tampilkan atau sembunyikan baris berdasarkan apakah query ditemukan
+                if (rowText.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
 
 <?= $this->endSection('content'); ?>

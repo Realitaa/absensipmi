@@ -22,7 +22,6 @@
     }
 </style>
     
-    <div class="bg-light">
         <h2 class="ps-3">Selamat Datang Admin Admin1</h2>
         <p class="ps-3">Berikut ini adalah laporan singkat kehadiran Karyawan PMI Kota Medan hari ini.</p>
     
@@ -38,7 +37,7 @@
                     </div>
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                         <h2>Hadir</h2>
-                        <h3 class="mb-0" style="font-size: 2rem;">0</h3>
+                        <h3 class="mb-0" style="font-size: 2rem;"><?= esc(count($karyawan_hadir)); ?></h3>
                     </div>
                 </div>
             </div>
@@ -51,7 +50,7 @@
                     </div>
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                         <h2>Sakit</h2>
-                        <h3 class="mb-0" style="font-size: 2rem;">0</h3>
+                        <h3 class="mb-0" style="font-size: 2rem;"><?= esc(count($karyawan_sakit)); ?></h3>
                     </div>
                 </div>
             </div>
@@ -64,7 +63,7 @@
                     </div>
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                         <h2>Cuti</h2>
-                        <h3 class="mb-0" style="font-size: 2rem;">0</h3>
+                        <h3 class="mb-0" style="font-size: 2rem;"><?= esc(count($karyawan_cuti)); ?></h3>
                     </div>
                 </div>
             </div>
@@ -77,12 +76,11 @@
                     </div>
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                         <h4>Tanpa Keterangan</h4>
-                        <h3 class="mb-0" style="font-size: 2rem;">0</h3>
+                        <h3 class="mb-0" style="font-size: 2rem;"><?= esc(count($karyawan_tanpaKeterangan)); ?></h3>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
     <!-- Tabel Default: Hadir -->
     <div id="table-container" class="p-3">
@@ -231,7 +229,7 @@ function showTable(status) {
                         <?php foreach ($karyawan_tanpaKeterangan as $tK): ?>
                             <tr>
                             <th scope="row"><?= $i++ ?></th>
-                            <td><a href="karyawan/"<?= esc($tK['kID']); ?>><?= esc($tK['nama']); ?></a></td>
+                            <td><a href="karyawan/<?= esc($tK['kID']); ?>"><?= esc($tK['nama']); ?></a></td>
                             <td><?= esc($tK['jabatan']); ?></td>
                             <td><a href="mailto:<?= esc($tK['email']); ?>"><?= esc($tK['email']); ?></a></td>
                             <td><a href="https://wa.me/<?= esc($tK['no_telepon']); ?>"><?= esc($tK['no_telepon']); ?></a></td>

@@ -61,7 +61,7 @@
             </tr>
         </thead>
         <tbody class="monthly-table-body">
-            <!-- Data absensi harian diisi dari script AJAX -->
+            <!-- Data absensi bulanan diisi dari script AJAX -->
         </tbody>
         </table>
     </div>

@@ -29,7 +29,6 @@ class AddTableUsers extends Migration
                 'type'       => 'VARCHAR',
                 'constraint' => 100,
                 'null'       => false,
-                'unique'     => true,
             ],
             'no_telepon' => [
                 'type'       => 'VARCHAR',
