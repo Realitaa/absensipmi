@@ -48,7 +48,7 @@
   <form action="login">
     <div class="text-center">
       <img class="mb-4" src="https://www.pmimedan.or.id/wp-content/uploads/2021/02/logo-PMIMedan-e1618371991309.png" alt="Palang Merah Indonesia Kota Medan" width="200">
-      <h1 class="h3 mb-3 fw-normal">Login</h1>
+      <h1 class="h3 mb-3 fw-normal">Administrator</h1>
     </div>
 
     <div class="form-floating">

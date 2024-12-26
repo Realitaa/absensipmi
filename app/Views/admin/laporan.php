@@ -1,4 +1,4 @@
-<?= $this->extend('template/templateAdmin'); ?>
+<?= $this->extend('template/navbarAdmin'); ?>
 
 <?= $this->section('content'); ?>
 
@@ -72,31 +72,47 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Inisialisasi Flatpickr
-        flatpickr('#tanggal', {
-            dateFormat: 'd-m-Y',
-            minDate: '<?= esc($min_date); ?>',
-            maxDate: '<?= esc($max_date); ?>',
-            onChange: function(selectedDates, dateStr, instance) {
-                loadData(dateStr); // Memuat data baru saat tanggal berubah
-            }
-        });
+    // Inisialisasi Flatpickr untuk tanggal dan bulan
+    flatpickr('#tanggal', {
+        dateFormat: 'd-m-Y',
+        minDate: '<?= esc($min_date); ?>',
+        maxDate: '<?= esc($max_date); ?>',
+        onChange: function (selectedDates, dateStr) {
+            loadDailyData(dateStr);
+        }
+    });
 
-        // Fungsi untuk memuat data berdasarkan tanggal yang dipilih
-        function loadData(tanggal) {
-            fetch("<?= site_url('laporan/getHarianData'); ?>?tanggal=" + tanggal)
-                .then(response => response.json())
-                .then(data => {
-                    let tableBody = document.getElementById('daily-table-body');
-                    tableBody.innerHTML = ''; // Hapus data sebelumnya
+    flatpickr('#bulan', {
+        dateFormat: 'm-Y',
+        minDate: '<?= esc($min_month); ?>',
+        maxDate: '<?= esc($max_month); ?>',
+        plugins: [new monthSelectPlugin({ shorthand: true, dateFormat: "m-Y", altFormat: "F Y" })],
+        onChange: function (selectedDates, dateStr) {
+            loadMonthlyData(dateStr);
+        }
+    });
 
-                    // Periksa jika ada data
-                    if (data.length > 0) {
-                        data.forEach((k, index) => {
-                            let row = document.createElement('tr');
+    // Fungsi untuk memuat data tabel harian
+    function loadDailyData(tanggal) {
+        const tableBody = document.getElementById('daily-table-body');
+        const exportButton = document.getElementById('export-harian');
 
-                            // Menambahkan data ke dalam baris
-                            row.innerHTML = `
+        // Tampilkan animasi loading dan nonaktifkan tombol export
+        tableBody.innerHTML = `<tr><td colspan="7">Loading...</td></tr>`;
+        exportButton.classList.remove('btn-success');
+        exportButton.classList.add('btn-secondary');
+        exportButton.disabled = true;
+
+        // Lakukan fetch untuk mengambil data
+        fetch(`<?= site_url('/administrator/laporan/getHarianData'); ?>?tanggal=${tanggal}`)
+            .then(response => response.json())
+            .then(data => {
+                tableBody.innerHTML = ''; // Hapus baris loading
+
+                if (data.length > 0) {
+                    data.forEach((k, index) => {
+                        const row = `
+                            <tr>
                                 <th scope="row">${index + 1}</th>
                                 <td>${k.nama}</td>
                                 <td>${k.jabatan}</td>
@@ -104,106 +120,93 @@
                                 <td>${k.kehadiran || 'Tanpa Keterangan'}</td>
                                 <td>${k.tanggal}</td>
                                 <td>${k.jam || '-'}</td>
-                            `;
-
-                            tableBody.appendChild(row);
-                        });
-                    } else {
-                        let row = document.createElement('tr');
-                        row.innerHTML = '<td colspan="7">Tidak Ada data untuk tanggal ini</td>';
-                        tableBody.appendChild(row);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                });
-        }
-
-        // Memuat data berdasarkan default tanggal saat halaman pertama kali dimuat
-        loadData("<?= date('d-m-Y', strtotime('-1 day')); ?>");
-
-        // Inisialisasi Datepicker untuk bulan
-        flatpickr('#bulan', {
-            dateFormat: 'm-Y',
-            minDate: '<?= esc($min_month); ?>',
-            maxDate: '<?= esc($max_month); ?>',
-            plugins: [
-            new monthSelectPlugin({
-                shorthand: true,
-                dateFormat: "m-Y",
-                altFormat: "F Y"
-            })
-        ],
-        });
-
-        // Fungsi untuk mengambil dan memuat data ke tabel
-        function loadTableData(bulan) {
-            $.ajax({
-                url: '<?= base_url('laporan/getBulananData'); ?>', // Sesuaikan dengan URL endpoint Anda
-                type: 'GET',
-                data: { bulan: bulan },
-                success: function (data) {
-                    const tbody = $('.monthly-table-body');
-                    tbody.empty(); // Kosongkan tabel sebelum mengisi ulang
-
-                    if (data.length === 0) {
-                        tbody.append('<tr><td colspan="36">Tidak ada data untuk bulan ini.</td></tr>');
-                        return;
-                    }
-
-                    data.forEach((item, index) => {
-                        let row = `<tr>
-                            <th scope="row">${index + 1}</th>
-                            <td>${item.nama}</td>`;
-
-                        // Inisialisasi counter untuk summary
-                        let summary = { H: 0, S: 0, C: 0, TK: 0 };
-
-                        // Tambahkan kolom absensi (1-30)
-                        for (let i = 1; i <= 30; i++) {
-                            const absensi = item.absensi[i] || ''; // Ambil tipe absensi
-
-                            // Logika untuk akronim huruf kapital
-                            let abbreviation = '';
-                            if (absensi.toLowerCase() === 'tanpa keterangan') {
-                                abbreviation = 'TK'; // Akronim khusus untuk Tanpa Keterangan
-                                summary.TK++;
-                            } else {
-                                abbreviation = absensi.charAt(0).toUpperCase(); // Huruf kapital pertama
-                                if (abbreviation === 'H') summary.H++;
-                                if (abbreviation === 'S') summary.S++;
-                                if (abbreviation === 'C') summary.C++;
-                            }
-
-                            row += `<td>${abbreviation}</td>`;
-                        }
-
-                        // Tambahkan kolom summary
-                        row += `
-                            <td>${summary.H}</td>
-                            <td>${summary.S}</td>
-                            <td>${summary.C}</td>
-                            <td>${summary.TK}</td>
-                        </tr>`;
-                        tbody.append(row);
+                            </tr>`;
+                        tableBody.insertAdjacentHTML('beforeend', row);
                     });
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error:', error);
+                } else {
+                    tableBody.innerHTML = `<tr><td colspan="7">Tidak Ada Data untuk Tanggal Ini</td></tr>`;
                 }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                tableBody.innerHTML = `<tr><td colspan="7">Terjadi Kesalahan Saat Mengambil Data</td></tr>`;
+            })
+            .finally(() => {
+                // Aktifkan kembali tombol export
+                exportButton.classList.remove('btn-secondary');
+                exportButton.classList.add('btn-success');
+                exportButton.disabled = false;
             });
-        }
+    }
 
-        // Panggil fungsi untuk pertama kali dengan bulan default
-        const defaultBulan = $('#bulan').val();
-        loadTableData(defaultBulan);
+    // Fungsi untuk memuat data tabel bulanan
+    function loadMonthlyData(bulan) {
+        const tableBody = document.querySelector('.monthly-table-body');
+        const exportButton = document.getElementById('export-bulanan');
 
-        // Update data tabel saat bulan diubah
-        $('#bulan').change(function () {
-            const bulan = $(this).val();
-            loadTableData(bulan);
+        // Tampilkan animasi loading dan nonaktifkan tombol export
+        tableBody.innerHTML = `<tr><td colspan="36">Loading...</td></tr>`;
+        exportButton.classList.remove('btn-success');
+        exportButton.classList.add('btn-secondary');
+        exportButton.disabled = true;
+
+        // Lakukan AJAX untuk mengambil data
+        $.ajax({
+            url: '<?= base_url('/administrator/laporan/getBulananData'); ?>',
+            type: 'GET',
+            data: { bulan: bulan },
+            success: function (data) {
+                tableBody.innerHTML = ''; // Hapus baris loading
+
+                if (data.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="36">Tidak ada data untuk bulan ini.</td></tr>`;
+                    return;
+                }
+
+                data.forEach((item, index) => {
+                    let row = `<tr>
+                        <th scope="row">${index + 1}</th>
+                        <td>${item.nama}</td>`;
+
+                    let summary = { H: 0, S: 0, C: 0, TK: 0 };
+
+                    for (let i = 1; i <= 30; i++) {
+                        const absensi = item.absensi[i] || '';
+                        const abbreviation = absensi.charAt(0).toUpperCase();
+                        row += `<td>${abbreviation}</td>`;
+
+                        if (abbreviation === 'H') summary.H++;
+                        if (abbreviation === 'S') summary.S++;
+                        if (abbreviation === 'C') summary.C++;
+                        if (abbreviation === 'T') summary.TK++;
+                    }
+
+                    row += `
+                        <td>${summary.H}</td>
+                        <td>${summary.S}</td>
+                        <td>${summary.C}</td>
+                        <td>${summary.TK}</td>
+                    </tr>`;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                tableBody.innerHTML = `<tr><td colspan="36">Terjadi Kesalahan Saat Mengambil Data</td></tr>`;
+            },
+            complete: function () {
+                // Aktifkan kembali tombol export
+                exportButton.classList.remove('btn-secondary');
+                exportButton.classList.add('btn-success');
+                exportButton.disabled = false;
+            }
         });
-    });
+    }
+
+    // Panggil fungsi untuk memuat data saat halaman dimuat
+    loadDailyData("<?= date('d-m-Y', strtotime('-1 day')); ?>");
+    loadMonthlyData("<?= date('m-Y', strtotime('-1 day')); ?>");
+});
 
     // Ekspor Tabel Harian ke Excel
     document.getElementById('export-harian').addEventListener('click', function () {

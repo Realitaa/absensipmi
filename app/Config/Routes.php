@@ -6,42 +6,58 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-// Routes Autentikasi
-$routes->get('/', 'AuthController::login'); 
+// Group Route Employee
+// Authentication
+$routes->view('/', 'login'); 
+$routes->get('/login', 'AuthController::login'); 
 
-// Routes Karyawan
-// $routes->get('/karyawan', 'Karyawan::index');
-// $routes->get('/karyawan/izin', 'Karyawan::izin');
-// $routes->post('/karyawan/kirimIzin', 'Karyawan::kirimIzin');
-// $routes->get('/karyawan/cuti', 'Karyawan::cuti');
-// $routes->post('/karyawan/kirimCuti', 'Karyawan::kirimCuti');
-// $routes->get('/karyawan/riwayat', 'Karyawan::riwayat');
-// Routes Admin : Dashboard
-$routes->get('/dashboard', 'AdminController::dashboard');
+$routes->group('', ['' => ''], function($routes) {
+    $routes->get('home', 'Karyawan::index');
+    $routes->get('kehadiran', 'Karyawan::kehadiran');
+    $routes->post('ketidakhadiran', 'Karyawan::ketidakhadiran');
+    $routes->get('karyawan/(:num)', 'Karyawan::karyawan/$1'); //Dapat diakses admin
+    $routes->get('karyawan/me', 'Karyawan::$1'); // Hanya dapat diakses pemilik akun karyawan
+    $routes->get('karyawan/update/me', 'Karyawan::editKaryawan/$1'); // Hanya dapat diakses pemilik akun karyawan
+});
 
-// Routes Admin : Menu Karyawan
-// Menu Karyawan : Tambah Karyawan
-$routes->get('/karyawan', 'AdminController::karyawan');
-$routes->get('/karyawan/add', 'AdminController::addKaryawan'); 
-$routes->post('/karyawan/save', 'AdminController::saveKaryawan');
-// Menu Karyawan : Edit Karyawan
-$routes->get('/karyawan/edit/(:num)', 'AdminController::editKaryawan/$1'); 
-$routes->post('/karyawan/delete/(:num)', 'AdminController::deleteKaryawan/$1'); 
-$routes->post('/karyawan/status/(:num)', 'AdminController::statusKaryawan/$1');
-$routes->post('/karyawan/update/(:num)', 'AdminController::updateKaryawan/$1'); 
+// Group Route Administrator
+$routes->group('administrator', ['' => ''], function($routes) {
+    // Authentication
+    $routes->view('', 'admin/login'); 
+    $routes->get('login', 'AdminController::login');
 
-// Routes Admin : Menu Admin
-$routes->get('/admin', 'AdminController::admin');
-$routes->get('/admin/add', 'AdminController::addAdmin');
-$routes->post('/admin/save', 'AdminController::saveAdmin');
-// Menu Admin : Edit Admin
-$routes->get('/admin/edit/(:num)', 'AdminController::editAdmin/$1'); 
-$routes->post('/admin/delete/(:num)', 'AdminController::deleteAdmin/$1'); 
-$routes->post('/admin/status/(:num)', 'AdminController::statusAdmin/$1');
-$routes->post('/admin/update/(:num)', 'AdminController::updateAdmin/$1'); 
+    // To get server time
+    $routes->get('server-time', 'TimeController::getServerTime');
 
-// Routes Admin : Menu Laporan
-$routes->get('/laporan', 'AdminController::laporan');
-// Menu Laporan : AJAX
-$routes->get('/laporan/getHarianData', 'AdminController::getHarianData');
-$routes->get('/laporan/getBulananData', 'AdminController::getBulananData');
+    // Dashboard
+    $routes->get('dashboard', 'AdminController::dashboard');
+    
+    // Menu Karyawan
+    // Menu Karyawan : Tambah Karyawan
+    $routes->get('karyawan', 'AdminController::karyawan');
+    $routes->get('karyawan/add', 'AdminController::addKaryawan'); 
+    $routes->post('karyawan/save', 'AdminController::saveKaryawan');
+    // Menu Karyawan : Edit Karyawan
+    $routes->get('karyawan/edit/(:num)', 'AdminController::editKaryawan/$1'); 
+    $routes->post('karyawan/delete/(:num)', 'AdminController::deleteKaryawan/$1'); 
+    $routes->post('karyawan/status/(:num)', 'AdminController::statusKaryawan/$1');
+    $routes->post('karyawan/update/(:num)', 'AdminController::updateKaryawan/$1'); 
+    $routes->post('karyawan/reset/(:num)', 'AdminController::resetKaryawan/$1'); 
+    
+    // Menu Admin
+    $routes->get('admin', 'AdminController::admin');
+    $routes->get('admin/add', 'AdminController::addAdmin');
+    $routes->post('admin/save', 'AdminController::saveAdmin');
+    // Menu Admin : Edit Admin
+    $routes->get('admin/edit/(:num)', 'AdminController::editAdmin/$1'); 
+    $routes->post('admin/delete/(:num)', 'AdminController::deleteAdmin/$1'); 
+    $routes->post('admin/status/(:num)', 'AdminController::statusAdmin/$1');
+    $routes->post('admin/update/(:num)', 'AdminController::updateAdmin/$1'); 
+    $routes->post('admin/reset/(:num)', 'AdminController::resetAdmin/$1'); 
+    
+    // Menu Laporan
+    $routes->get('laporan', 'AdminController::laporan');
+    // Menu Laporan : AJAX
+    $routes->get('laporan/getHarianData', 'AdminController::getHarianData');
+    $routes->get('laporan/getBulananData', 'AdminController::getBulananData');
+});

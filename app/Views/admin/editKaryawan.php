@@ -1,4 +1,4 @@
-<?= $this->extend('template/templateAdmin'); ?>
+<?= $this->extend('template/navbarAdmin'); ?>
 
 <?= $this->section('content'); ?>
 
@@ -8,7 +8,7 @@
                 <h4>Edit Data Karyawan</h4>
             </div>
             <div class="card-body">
-                <form action="<?= base_url('/karyawan/update' . $karyawan['id']) ?>" method="post">
+                <form action="<?= base_url('/administrator/karyawan/update' . $karyawan['id']) ?>" method="post">
                     <!-- Nama Pengguna -->
                     <div class="form-group">
                         <label for="nama_lengkap" class="text-warning">Nama Lengkap</label>
@@ -83,10 +83,13 @@
                                 <i class="fas fa-save"></i> Aktifkan Karyawan
                             </button>
                         <?php endif ?>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#resetModal">
+                            <i class="fas fa-save"></i> Reset Password
+                        </button>
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <i class="fas fa-save"></i> Hapus Karyawan
                         </button>
-                        <a href="<?= base_url('/karyawan') ?>" class="btn btn-secondary">
+                        <a href="<?= base_url('/administrator/karyawan') ?>" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> Kembali
                         </a>
                     </div>
@@ -95,6 +98,6 @@
         </div>
     </div>
 
-<?= include 'modalConfirm.php'; ?>
+<?php include 'modalConfirm.php'; ?>
 
 <?= $this->endSection('content'); ?>

@@ -1,11 +1,11 @@
-<?= $this->extend('template/templateAdmin'); ?>
+<?= $this->extend('template/navbarAdmin'); ?>
 
 <?= $this->section('content'); ?>
 
     <div id="table-container" class="p-3">
         <h3 class="text-center">Tabel Admin</h3>
         <div class="d-flex justify-content-between align-items-center">
-            <a class="btn btn-primary my-2" href="/admin/add">Tambah</a> 
+            <a class="btn btn-primary my-2" href="/administrator/admin/add">Tambah</a> 
             <input class="form-control w-auto " type="search" placeholder="Search" aria-label="Search" id="search-input">
         </div>                
         <table class="table table-bordered table-striped text-center align-middle">
@@ -25,7 +25,7 @@
                 <?php 
                     $i = 1;  
                     foreach ($admins as $a):  ?>
-                    <tr class="<?= (esc($k['status']) == 'nonaktif') ? 'table-warning' : ''; ?>">
+                    <tr class="<?= (esc($a['status']) == 'nonaktif') ? 'table-warning' : ''; ?>">
                         <th scope="row"><?= $i++; ?></th>
                         <td>
                             <?php if (!empty($a['foto'])): ?>

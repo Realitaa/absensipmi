@@ -1,4 +1,4 @@
-<?= $this->extend('template/templateAdmin') ?>
+<?= $this->extend('template/navbarAdmin') ?>
 
 <?= $this->section('content') ?>
 
@@ -21,9 +21,13 @@
         box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
     }
 </style>
-    
-        <h2 class="ps-3">Selamat Datang Admin Admin1</h2>
-        <p class="ps-3">Berikut ini adalah laporan singkat kehadiran Karyawan PMI Kota Medan hari ini.</p>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="ps-3">Selamat Datang Admin Admin1</h2>
+                <p class="ps-3">Berikut ini adalah laporan singkat kehadiran Karyawan PMI Kota Medan hari ini.</p>
+            </div>
+            <a href="/scanner" class="btn btn-secondary m-3">Mulai Scanner Absensi (Under Maintenance)</a>
+        </div>
     
 
         <div class="container px-5">
@@ -32,8 +36,8 @@
             <div class="col-6 col-sm-6 col-md-3 mb-4">
                 <div class="card align-items-center" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" onclick="showTable('hadir')">
                     <div class="position-relative pt-3">
-                        <img src="user.png" class="card-img-top" alt="Karyawan Hadir" style="width: 100px;">
-                        <img src="check.png" class="position-absolute" alt="Check" style="bottom: -20px; right: -10px; width: 65px;">
+                        <img src="/user.png" class="card-img-top" alt="Karyawan Hadir" style="width: 100px;">
+                        <img src="/check.png" class="position-absolute" alt="Check" style="bottom: -20px; right: -10px; width: 65px;">
                     </div>
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                         <h2>Hadir</h2>
@@ -46,7 +50,7 @@
             <div class="col-6 col-sm-6 col-md-3 mb-4">
                 <div class="card align-items-center" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" onclick="showTable('sakit')">
                     <div class="position-relative pt-3">
-                        <img src="thermometer.png" class="card-img-top" alt="Karyawan Sakit" style="width: 100px;">
+                        <img src="/thermometer.png" class="card-img-top" alt="Karyawan Sakit" style="width: 100px;">
                     </div>
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                         <h2>Sakit</h2>
@@ -59,7 +63,7 @@
             <div class="col-6 col-sm-6 col-md-3 mb-4">
                 <div class="card align-items-center" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" onclick="showTable('cuti')">
                     <div class="position-relative pt-3">
-                        <img src="beach-umbrella.png" class="card-img-top" alt="Karyawan Cuti" style="width: 100px;">
+                        <img src="/beach-umbrella.png" class="card-img-top" alt="Karyawan Cuti" style="width: 100px;">
                     </div>
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                         <h2>Cuti</h2>

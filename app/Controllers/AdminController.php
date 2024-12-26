@@ -205,6 +205,18 @@ class AdminController extends BaseController
         }
     }
 
+    public function resetKaryawan($id) {
+        $model = new UserModel();
+
+        $reset = $model->update($id, ['password' => '']);
+
+        if ($reset) {
+            return redirect()->to('/karyawan')->with('success', 'Password berhasil di reset!');
+        } else {
+            return redirect()->to('/karyawan')->with('error', 'Gagal reset password!');
+        }
+    }
+
     // Method untuk Menu Admin
     public function admin()
     {
@@ -237,6 +249,8 @@ class AdminController extends BaseController
             'nama_pengguna' => 'required|min_length[3]|max_length[50]',
             'email' => 'valid_email',
             'telepon' => 'numeric|min_length[10]|max_length[15]',
+            'password' => 'required|min_length[4]',
+            'confirm_password' => 'required|matches[password]',
         ]);
 
         if (!$validation) {
@@ -250,6 +264,7 @@ class AdminController extends BaseController
             'nama_pengguna' => $this->request->getPost('nama_pengguna'),
             'email' => $this->request->getPost('email'),
             'no_telepon' => $this->request->getPost('telepon'),
+            'password' => password_hash($this->request->getPost('password'), PASSWORD_BCRYPT), // Enkripsi password
         ];
         // Simpan data ke database
         $inserted = $model->insert( $data);
@@ -287,6 +302,8 @@ class AdminController extends BaseController
             'nama_pengguna' => 'required|min_length[3]|max_length[50]',
             'email' => 'required|valid_email',
             'telepon' => 'required|numeric|min_length[10]|max_length[15]',
+            'password' => 'required|min_length[4]',
+            'confirm_password' => 'required|matches[password]',
         ]);
         
         if (!$validation) {
@@ -300,6 +317,7 @@ class AdminController extends BaseController
             'nama_pengguna' => $this->request->getPost('nama_pengguna'),
             'email' => $this->request->getPost('email'),
             'no_telepon' => $this->request->getPost('telepon'),
+            'password' => password_hash($this->request->getPost('password'), PASSWORD_BCRYPT), // Enkripsi password
         ];
         
         $updated = $model->update($id, $data);
@@ -345,6 +363,18 @@ class AdminController extends BaseController
             return redirect()->to('/admin')->with('success', 'Admin berhasil dihapus!');
         } else {
             return redirect()->to('/admin')->with('error', 'Admin gagal dihapus!');
+        }
+    }
+    
+    public function resetAdmin($id) {
+        $model = new AdminModel();
+
+        $reset = $model->update($id, ['password' =>  password_hash('udd123', PASSWORD_BCRYPT)]);
+
+        if ($reset) {
+            return redirect()->to('/admin')->with('success', 'Password berhasil di reset!');
+        } else {
+            return redirect()->to('/admin')->with('error', 'Gagal reset password!');
         }
     }
 
@@ -417,5 +447,19 @@ class AdminController extends BaseController
             }
         }
         return $this->response->setJSON(array_values($result));
+    }
+
+    // Method untuk Menu Admin
+    public function profile($id) {
+        $model = new AdminModel();
+
+        $admin = $model->select('nama, nama_pengguna, email, no_telepon')->find($id);
+
+        $data = [
+            'title' => 'Profile ' . $admin['nama'],
+            'admin' => $admin,
+        ];
+
+        return view('admin/profile', $data);
     }
 }
