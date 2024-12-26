@@ -41,6 +41,8 @@ class Autoload extends AutoloadConfig
      */
     public $psr4 = [
         APP_NAMESPACE => APPPATH,
+        // Gunakan perintah ini jika Filter tidak di load
+        // 'App\Filters' => APPPATH . 'Filters',
     ];
 
     /**
