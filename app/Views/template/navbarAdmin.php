@@ -43,7 +43,7 @@
                 <!-- Profil di Navbar untuk Desktop -->
                 <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="https://via.placeholder.com/30" alt="User Avatar" width="30" height="30" class="rounded-circle">
-                    <span class="ms-2">Username</span> <!-- Ganti dengan username pengguna yang diambil dari session -->
+                    <span class="ms-2"><?= session('user_data')['Username']; ?></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <!-- <li><a class="dropdown-item" href="/admin/1">Profile</a></li> Ganti 1 dengan pengambilan id untuk setiap pengguna -->

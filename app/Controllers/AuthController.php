@@ -83,9 +83,10 @@ class AuthController extends BaseController
                     $session->setTempdata('user_data', [
                         'UserID' => $user['id'],
                         'Username' => $user['nama_pengguna'],
+                        'Foto' => $user['foto'],
                         'Role' => 'admin',
                         'logged_in' => true,
-                    ]);
+                    ], 60 * 60 * 24); // 1 hari
     
                     return redirect()->to('/administrator/dashboard');
                 } else {
