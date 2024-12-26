@@ -12,8 +12,6 @@
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sign-in/">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 
-<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <style>
       html,
       body {
@@ -45,18 +43,29 @@
   <body class="d-flex align-items-center py-4 bg-body-tertiary">
     
 <main class="form-signin w-100 m-auto">
-  <form action="login">
+<?php if (session()->getFlashdata('success')): ?>
+    <div id="flash-message" class="alert alert-success mx-3">
+        <?= session()->getFlashdata('success'); ?>
+    </div>
+<?php endif; ?>
+
+<?php if (session()->getFlashdata('error')): ?>
+    <div id="flash-message" class="alert alert-danger mx-3">
+        <?= session()->getFlashdata('error'); ?>
+    </div>
+<?php endif; ?>
+<form action="/administrator/login" method="post">
     <div class="text-center">
       <img class="mb-4" src="https://www.pmimedan.or.id/wp-content/uploads/2021/02/logo-PMIMedan-e1618371991309.png" alt="Palang Merah Indonesia Kota Medan" width="200">
       <h1 class="h3 mb-3 fw-normal">Administrator</h1>
     </div>
 
     <div class="form-floating">
-      <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
+      <input type="text" name="username" class="form-control" id="floatingInput" placeholder="name@example.com">
       <label for="floatingInput">Nama Pengguna</label>
     </div>
     <div class="form-floating">
-      <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+      <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
       <label for="floatingPassword">Kata Sandi</label>
     </div>
     <button class="btn btn-primary w-100 py-2" type="submit">Login</button>

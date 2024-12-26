@@ -12,7 +12,7 @@
             <ul class="navbar-nav ms-auto d-lg-none">
             </ul>
             <!-- Atur logika untuk mengecek apakah akun sudah secure (sudah di atur password nya) -->
-            <?php if (!session('isSecureAccount')): ?>
+            <?php if (!session('user_data')['isSecureAccount']): ?>
                 <script src="/popoverNavbar.js"></script>
                 <i class="bi bi-exclamation-triangle me-2 text-danger blink-icon" 
                 style="font-size: 20px;"
@@ -26,7 +26,7 @@
                     <span class="ms-2"><?= session('user_data')['Username']; ?></span> <!-- Ganti dengan username pengguna yang diambil dari session -->
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li><a class="dropdown-item" href="/karyawan/<?= session('user_data')['UserID']; ?>">Profile</a></li> <!-- Ganti 1 dengan pengambilan id untuk setiap pengguna -->
+                    <li><a class="dropdown-item" href="/karyawan/me">Profile</a></li> <!-- Ganti 1 dengan pengambilan id untuk setiap pengguna -->
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="/logout/user"><span class="text-danger">Log Out</span></a></li>
                 </ul>

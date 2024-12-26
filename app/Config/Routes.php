@@ -12,14 +12,11 @@ $routes->view('/', 'login');
 $routes->post('/login', 'AuthController::login');
 
 $routes->group('', ['filter' => 'auth:karyawan'], static function ($routes) {
-    $routes->get('home', 'Karyawan::index');
-    $routes->get('kehadiran', 'Karyawan::kehadiran');
-    $routes->post('ketidakhadiran', 'Karyawan::ketidakhadiran');
-    $routes->get('karyawan/(:num)', 'Karyawan::karyawan/$1'); //Dapat diakses admin
-    $routes->get('karyawan/me', 'Karyawan::$1'); 
-    $routes->get('karyawan/update/me', 'Karyawan::editKaryawan/$1'); 
-
-    $routes->get('logout/(:segment)', 'AuthController::logout/$1'); 
+    $routes->get('home', 'KaryawanController::index');
+    $routes->get('kehadiran', 'KaryawanController::kehadiran');
+    $routes->post('ketidakhadiran', 'KaryawanController::ketidakhadiran');
+    $routes->get('karyawan/(:alphanum)', 'KaryawanController::karyawan/$1'); //Dapat diakses admin
+    $routes->post('karyawan/update/me', 'KaryawanController::updateKaryawan/$1'); 
 });
 
 // Group Route Administrator
@@ -61,6 +58,6 @@ $routes->group('administrator', ['filter' => 'auth:admin'], function ($routes) {
     // Menu Laporan : AJAX
     $routes->get('laporan/getHarianData', 'AdminController::getHarianData');
     $routes->get('laporan/getBulananData', 'AdminController::getBulananData');
-
-    $routes->get('logout/(:segment)', 'AuthController::logout/$1');
 });
+
+$routes->get('logout/(:segment)', 'AuthController::logout/$1'); 

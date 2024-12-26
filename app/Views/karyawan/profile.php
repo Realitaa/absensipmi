@@ -4,7 +4,7 @@
 <div class="container py-3">
     <div class="row text-center pb-3">
         <div class="col-md-5">
-            <img src="https://via.assets.so/img.jpg?w=300&h=300&tc=blue&bg=#cecece" alt="">
+            <img src="<?= esc($karyawan['foto']) ?? '/user.png'; ?>" alt="User Avatar" width="300px">
         </div>
         <div class="col-md-7 align-content-center">
             <h2 class="pt-2"><?= esc($karyawan['nama']); ?></h2>
@@ -56,7 +56,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="<?= base_url('/edit/myself'); ?>" method="post">
+        <form action="<?= base_url('/karyawan/update/me'); ?>" method="post">
             <div class="form-group">
                 <label for="email" class="text-primary">Email</label>
                 <input type="text" name="email" id="email" class="form-control" placeholder="Masukkan email" value="<?= esc($karyawan['email']); ?>">

@@ -6,13 +6,26 @@ use App\Models\AbsensiModel;
 use App\Models\SakitModel;
 use App\Models\CutiModel;
 
-class Karyawan extends BaseController
+class KaryawanController extends BaseController
 {
     public function index()
     {
-        // Cek status absensi (simulasi data untuk sementara)
-        $statusAbsensi = false; // Ubah ke true jika sudah absen
-        return view('karyawan/home', ['statusAbsensi' => $statusAbsensi, 'title' => 'Absensi PMI']);
+        $model = new AbsensiModel();
+        $id = session('user_data')['UserID'];
+        $today = date('Y-m-d');
+        
+        $absensi = $model
+            ->select('absensi.tanggal, absensi.tipe, absensi.created_at, c.judul AS judulCuti, c.deskripsi AS deskripsiCuti, c.status AS statusCuti, s.judul AS judulSakit, s.deskripsi AS deskripsiSakit, s.status AS statusSakit')
+            ->join('cuti c', 'c.absensi_id = absensi.id', 'left')
+            ->join('sakit s', 's.absensi_id = absensi.id', 'left')
+            ->where('tanggal', $today)
+            ->where('user_id', $id)
+            ->first();
+        $data = [
+            'title' => 'Absensi Karyawan',
+            'absensi' => $absensi
+        ];
+        return view('karyawan/home', $data);
     }
     
     public function kehadiran()
@@ -117,14 +130,21 @@ public function karyawan($id)
 {
     $modelUser = new UserModel();
     $modelAbsensi = new AbsensiModel();
+    if ($id = 'me') {
+        $id = session('user_data')['UserID'];
+    }
     $karyawan = $modelUser->select('id, nama, nama_pengguna, email, no_telepon, jabatan, foto')->find($id);
 
+    if ($karyawan) {
     $absensi = $modelAbsensi->select('absensi.id AS ID, absensi.tanggal, absensi.tipe, absensi.tanggal, absensi.created_at AS waktu, c.judul, c.deskripsi, s.judul, s.deskripsi')
         ->join('cuti c', 'c.absensi_id = absensi.id', 'left')
         ->join('sakit s', 's.absensi_id = absensi.id', 'left')
         ->where('absensi.user_id', $id)
         ->find();
-    
+    } else {
+        return redirect()->back()->with('error', 'Karyawan tidak ditemukan.');
+    }
+
     $data = [
         'title' => 'Profil Karyawan',
         'karyawan' => $karyawan,
@@ -134,35 +154,45 @@ public function karyawan($id)
     return view('karyawan/profile', $data);
 }
 
-public function updateKaryawan($id = 1)
-    {
-        $model = new UserModel();
+public function updateKaryawan()
+{
+    $model = new UserModel();
 
-        // Ambil ID dari session
+    $id = session('user_data')['UserID'];
 
-        $validation = $this->validate([
-            'email' => 'valid_email',
-            'telepon' => 'numeric|min_length[10]|max_length[15]',
-            'confirm_password' => 'matches[password]',
-        ]);
-        
-        if (!$validation) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-        }
-
-        // Ambil data dari form
-        $data = [
-            'email' => $this->request->getPost('email'),
-            'no_telepon' => $this->request->getPost('telepon'),
-            'password' => $this->request->getPost('password'),
-        ];
-        
-        $updated = $model->update($id, $data);
-
-        if ($updated) {
-            return redirect()->to('/me')->with('success', 'Profil berhasil diperbarui!');
-        } else {
-            return redirect()->to('/me')->with('error', 'Profil gagal diperbarui!');
-        }
+    $validation = $this->validate([
+        'email' => 'valid_email',
+        'telepon' => 'numeric|min_length[10]|max_length[15]',
+        'confirm_password' => 'matches[password]',
+    ]);
+    
+    if (!$validation) {
+        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors())->with('error', 'Data tidak valid!');
     }
+
+    // Ambil data dari form
+    $data = [
+        'email' => $this->request->getPost('email'),
+        'no_telepon' => $this->request->getPost('telepon'),
+    ];
+
+    // Hash password jika diisi
+    $password = $this->request->getPost('password');
+    if (!empty($password)) {
+        $data['password'] = password_hash($password, PASSWORD_BCRYPT);
+    }
+
+    // Update data di database
+    $updated = $model->update($id, $data);
+
+    if ($updated) {
+        if (!empty($password)) {
+            return redirect()->to('/')->with('success', 'Password di perbarui. Silahkan login ulang.');
+        } else {
+            return redirect()->to('/karyawan/me')->with('success', 'Profil berhasil diperbarui!');
+        }
+    } else {
+        return redirect()->to('/karyawan//me')->with('error', 'Profil gagal diperbarui!');
+    }
+}
 }

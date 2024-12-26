@@ -4,16 +4,53 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <div class="container pt-4">
-    <h1 class="text-center">
-        <?= $statusAbsensi ? "Kamu Sudah Absensi Hari Ini" : "Kamu Belum Absen Hari Ini" ?>
-    </h1>
-    <p class="text-center">
-        <?= $statusAbsensi ? "Selamat Bekerja" : "Ayo mulai absen di depan komputer admin" ?>
-    </p>
-    <div class="text-center pb-3">
-        <a href="/kehadiran" class="btn btn-primary me-2">Mulai Absensi</a>
-        <button class="btn btn-primary" id="form_ketidakhadiran">Form Ketidakhadiran</button>
-    </div>
+    <?php if (isset($absensi['tipe']) && $absensi['tipe'] == 'Hadir'): ?>
+        <h1 class="text-center">Kamu sudah absen hari ini</h1>
+        <h3 class="text-center">Tipe: Hadir</h3>
+        <p class="text-center pb-3">Selamat Bekerja</p>
+
+    <?php elseif (isset($absensi['tipe']) && $absensi['tipe'] == 'Sakit'): ?>
+        <?php if (esc($absensi['statusSakit']) == 'Menunggu') : ?>
+            <h1 class="text-center">Form Ketidakhadiran menunggu di konfirmasi admin.</h1>
+            <h3 class="text-center">Tipe: Sakit</h3>
+            <h6 class="text-center"><?= esc($absensi['judulSakit']); ?></h6>
+            <p class="text-center pb-3"><?= esc($absensi['deskripsiSakit']); ?></p>
+        <?php elseif (esc($absensi['statusSakit']) == 'Terima') : ?>
+            <h1 class="text-center">Kamu sudah absen hari ini.</h1>
+            <h3 class="text-center">Tipe: Sakit</h3>
+            <p class="text-center pb-3">Semoga cepat sembuh ya.</p>
+        <?php elseif (esc($absensi['statusSakit']) == 'Tolak') : ?>
+            <h1 class="text-center">Maaf, form ketidakhadiran ditolak.</h1>
+            <p class="text-center pb-3">Hubungi admin untuk meminta informasi</p>
+        <?php endif; ?>
+
+    <?php elseif (isset($absensi['tipe']) && $absensi['tipe'] == 'Cuti') : ?>
+        <?php if (esc($absensi['statusCuti']) == 'Menunggu') : ?>
+            <h1 class="text-center">Form Ketidakhadiran menunggu di konfirmasi admin.</h1>
+            <h3 class="text-center">Tipe: Cuti</h3>
+            <h6 class="text-center"><?= esc($absensi['judulCuti']); ?></h6>
+            <p class="text-center pb-3"><?= esc($absensi['deskripsiCuti']); ?></p>
+        <?php elseif (esc($absensi['statusCuti']) == 'Terima') : ?>
+            <h1 class="text-center">Kamu sudah absen hari ini.</h1>
+            <h3 class="text-center">Tipe: Cuti</h3>
+            <p class="text-center pb-3">Selamat Liburan.</p>
+        <?php elseif (esc($absensi['statusCuti']) == 'Tolak') : ?>
+            <h1 class="text-center">Maaf, form ketidakhadiran ditolak.</h1>
+            <p class="text-center pb-3">Hubungi admin untuk meminta informasi</p>
+        <?php endif; ?>
+
+    <?php else : ?>
+        <h1 class="text-center">Kamu belum absen hari ini.</h1>
+        <p class="text-center">Ayo mulai absen di depan komputer admin!</p>
+        <div class="text-center pb-3">
+            <?php if (session('user_data')['isSecureAccount']) : ?>
+                <a href="kehadiran" class="btn btn-primary me-2">Mulai Absensi</a>
+                <button class="btn btn-primary" id="form_ketidakhadiran">Form Ketidakhadiran</button>
+            <?php else : ?>
+                <p>Atur kata sandi mu di <a href="/karyawan/me">Profil</a> agar bisa melakukan absensi.</p>
+            <?php endif; ?>
+            </div>
+    <?php endif; ?>
 
     <!-- Form Container -->
     <div id="formContainer" style="display: none;">

@@ -64,7 +64,6 @@ class AuthController extends BaseController
             $session->setFlashdata('error', 'Akun kamu tidak ditemukan.');
             return redirect()->to('/');
         }
-        
     }
 
     // Controller untuk Admin
@@ -75,28 +74,34 @@ class AuthController extends BaseController
 
         $username = $this->request->getVar('username');
         $password = $this->request->getVar('password');
-        $user = $model->where('Username', $username)->first();
+        $user = $model->where('nama_pengguna', $username)->first();
 
-        if ($user && $user['status'] == 'aktif') {
-            if ($user && password_verify($password, $user['Password'])) {
-                // Simpan informasi ke session
-                $session->setTempdata('user_data', [
-                    'UserID' => $user['id'],
-                    'Username' => $user['username'],
-                    'Role' => 'admin',
-                    'logged_in' => true,
-                ]);
-
-                return redirect()->to('/administrator/dashboard');
+        if ($user) {
+            if ($user['status'] == 'aktif') {
+                if (password_verify($password, $user['password'])) {
+                    // Simpan informasi ke session
+                    $session->setTempdata('user_data', [
+                        'UserID' => $user['id'],
+                        'Username' => $user['nama_pengguna'],
+                        'Role' => 'admin',
+                        'logged_in' => true,
+                    ]);
+    
+                    return redirect()->to('/administrator/dashboard');
+                } else {
+                    // Kembali ke login jika password salah
+                    $session->setFlashdata('error', 'Password salah.');
+                    return redirect()->to('/administrator')->withInput();
+                }
             } else {
-                // Kembali ke login jika password salah
-                $session->setFlashdata('error', 'Password salah.');
-                return redirect()->to('/administrator')->withInput();
+                // Kembali ke login jika akun dinonaktifkan
+                $session->setFlashdata('error', 'Akun kamu dinonaktifkan.');
+                return redirect()->to('/administrator');
             }
         } else {
-            // Kembali ke login jika status nonaktif
-            $session->setFlashdata('error', 'Akun kamu di nonaktifkan.');
-            return redirect()->to('/administrator')->withInput();
+            // Kembali ke login jika akun tidak terdaftar
+            $session->setFlashdata('error', 'Akun tidak terdaftar.');
+            return redirect()->to('/administrator');
         }
     }
 

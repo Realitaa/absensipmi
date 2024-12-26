@@ -46,11 +46,11 @@
                     <span class="ms-2">Username</span> <!-- Ganti dengan username pengguna yang diambil dari session -->
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li><a class="dropdown-item" href="/admin/1">Profile</a></li> <!-- Ganti 1 dengan pengambilan id untuk setiap pengguna -->
+                    <!-- <li><a class="dropdown-item" href="/admin/1">Profile</a></li> Ganti 1 dengan pengambilan id untuk setiap pengguna -->
                     <li>
-                        <hr class="dropdown-divider">
+                        <!-- <hr class="dropdown-divider"> -->
                     </li>
-                    <li><a class="dropdown-item" href="/logout"><span class="text-danger">Log Out</span></a></li>
+                    <li><a class="dropdown-item" href="/logout/admin"><span class="text-danger">Log Out</span></a></li>
                 </ul>
             </div>
         </div>
