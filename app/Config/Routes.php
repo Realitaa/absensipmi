@@ -14,6 +14,7 @@ $routes->post('/login', 'AuthController::login');
 $routes->group('', ['filter' => 'auth:karyawan'], static function ($routes) {
     $routes->get('home', 'KaryawanController::index');
     $routes->get('kehadiran', 'KaryawanController::kehadiran');
+    $routes->post('kehadiran/hadir', 'KaryawanController::hadir');
     $routes->post('ketidakhadiran', 'KaryawanController::ketidakhadiran');
     $routes->get('karyawan/(:alphanum)', 'KaryawanController::karyawan/$1'); //Dapat diakses admin
     $routes->post('karyawan/update/me', 'KaryawanController::updateKaryawan/$1'); 
@@ -29,6 +30,9 @@ $routes->group('administrator', ['filter' => 'auth:admin'], function ($routes) {
 
     // Dashboard
     $routes->get('dashboard', 'AdminController::dashboard');
+    $routes->get('absensi', 'AdminController::absensi');
+    $routes->get('absensi/fetchqr', 'AdminController::generateBarcodeAPI');
+    $routes->get('absensi/getAttendanceLogs', 'AdminController::getLogs');
 
     // Menu Karyawan
     // Menu Karyawan : Tambah Karyawan

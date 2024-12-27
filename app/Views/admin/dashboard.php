@@ -26,7 +26,7 @@
                 <h2 class="ps-3">Selamat Datang Admin Admin1</h2>
                 <p class="ps-3">Berikut ini adalah laporan singkat kehadiran Karyawan PMI Kota Medan hari ini.</p>
             </div>
-            <a href="/scanner" class="btn btn-secondary m-3">Mulai Scanner Absensi (Under Maintenance)</a>
+            <a href="absensi" class="btn btn-primary m-3">Mulai Barcode Absensi</a>
         </div>
     
 

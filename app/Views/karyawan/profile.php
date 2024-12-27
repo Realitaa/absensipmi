@@ -60,10 +60,20 @@
             <div class="form-group">
                 <label for="email" class="text-primary">Email</label>
                 <input type="text" name="email" id="email" class="form-control" placeholder="Masukkan email" value="<?= esc($karyawan['email']); ?>">
+                <?php if (session('errors.email')) : ?>
+                        <div class="invalid-feedback">
+                        <?= session('errors.email') ?>
+                    </div>
+                <?php endif; ?>
             </div>
             <div class="form-group mt-3">
                 <label for="telepon" class="text-primary">Nomor Telepon (WhatsApp)</label>
                 <input type="tel" name="telepon" id="telepon" class="form-control" placeholder="Masukkan nomor telepon (WhatsApp)" value="<?= esc($karyawan['no_telepon']); ?>">
+                <?php if (session('errors.telepon')) : ?>
+                        <div class="invalid-feedback">
+                        <?= session('errors.telepon') ?>
+                    </div>
+                <?php endif; ?>
             </div>
             <div class="form-group mt-3">
                 <label for="password" class="text-primary">Password</label>
@@ -72,6 +82,11 @@
             <div class="form-group mt-3">
                 <label for="confirm_password" class="text-primary">Konfirmasi Password</label>
                 <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Konfirmasi Password (kosongkan jika tidak diubah)">
+                <?php if (session('errors.confirm_password')) : ?>
+                        <div class="invalid-feedback">
+                        <?= session('errors.confirm_password') ?>
+                    </div>
+                <?php endif; ?>
             </div>
             <div class="form-group mt-3">
                 <label for="avatar" class="text-primary">Foto Profil (1:1 disarankan. <span class="text-danger">MAX file size: 1 MB</span>) </label>

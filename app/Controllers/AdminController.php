@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\UserModel;
 use App\Models\AbsensiModel;
 use App\Models\AdminModel;
+use App\Models\QRCodeModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class AdminController extends BaseController
@@ -462,4 +463,63 @@ class AdminController extends BaseController
 
         return view('admin/profile', $data);
     }
+
+    public function absensi() {
+        $data = [
+            'title' => 'Barcode Absensi',
+        ];
+        return view ('admin/barcode', $data);
+    }
+
+    public function generateBarcodeAPI()
+    {
+        $qrCodeModel = new QRCodeModel();
+
+        // Hitung timestamp batas waktu (lebih dari 10 detik dari sekarang)
+        $timeThreshold = date('Y-m-d H:i:s', strtotime('-10 seconds'));
+        $id = session('user_data')['UserID'];
+
+        // Hapus kode lama berdasarkan `created_at` dan `user_id`
+        $qrCodeModel->where('created_at <', $timeThreshold)
+                    ->where('issuer', $id)
+                    ->delete();
+                    
+        // Tambahkan dan kirim kode baru
+        $token = bin2hex(random_bytes(4));
+        $data = [
+            'uniqueCode' => $token,
+            'issuer' => $id
+        ];
+        $newCode = $qrCodeModel->insert($data);
+
+        if ($newCode) {
+            $qrCodeURL = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($token);
+            // Kembalikan token dan URL dalam format JSON
+            return $this->response->setJSON([
+                'token' => $token,
+                'qrCodeURL' => $qrCodeURL
+            ]);
+        }
+    }
+
+    public function getLogs() 
+{
+    $modelUser = new UserModel();
+    $today = date('Y-m-d');
+
+    $logs = $modelUser->select('users.nama, TIME(a.created_at) as waktu')
+        ->join('absensi a', 'users.id = a.user_id')
+        ->where('a.tipe', 'Hadir')
+        ->where('a.tanggal', $today)
+        ->orderBy('a.created_at', 'DESC')
+        ->limit(3)
+        ->findAll();
+
+    if (!$logs) {
+        return $this->response->setJSON(['error' => 'No logs found']);
+    }
+
+    return $this->response->setJSON(['logs' => $logs]);
+}
+
 }

@@ -35,7 +35,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/logout"><span class="text-danger">Log Out</span></a>
+                    <a class="nav-link" href="/logout/admin"><span class="text-danger">Log Out</span></a>
                 </li>
             </ul>
             <div class="dropdown d-none d-lg-block">

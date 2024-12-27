@@ -34,7 +34,7 @@ class AuthFilter implements FilterInterface
 
         // 1. Jika tidak ada role di session, redirect ke '/'
         if (!$currentRole) {
-            return redirect()->to('/')->with('error', 'Sesi Anda tidak valid. Silakan login ulang.');
+            return redirect()->to('/');
         }
 
         // 2. Jika role di session adalah 'karyawan' dan mencoba akses admin

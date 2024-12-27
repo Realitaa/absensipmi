@@ -5,6 +5,7 @@ use App\Models\UserModel;
 use App\Models\AbsensiModel;
 use App\Models\SakitModel;
 use App\Models\CutiModel;
+use App\Models\QRCodeModel;
 
 class KaryawanController extends BaseController
 {
@@ -58,9 +59,7 @@ class KaryawanController extends BaseController
     $judul = $this->request->getPost('judul');
     $deskripsi = $this->request->getPost('deskripsi');
     
-    // Ambil user_id dari session (misalnya, menggunakan session atau autentikasi)
-    // $user_id = session()->get('user_id');
-    $user_id = 1; // Simulasi user_id 
+    $user_id = session('user_data')['UserID'];
     
     // Parse tanggal dari range (tanggal pertama dan kedua)
     $tanggalRange = explode(' to ', $waktu);
@@ -187,6 +186,8 @@ public function updateKaryawan()
 
     if ($updated) {
         if (!empty($password)) {
+            $session = session();
+            $session->destroy();  // Menghancurkan semua data sesi
             return redirect()->to('/')->with('success', 'Password di perbarui. Silahkan login ulang.');
         } else {
             return redirect()->to('/karyawan/me')->with('success', 'Profil berhasil diperbarui!');
@@ -195,4 +196,39 @@ public function updateKaryawan()
         return redirect()->to('/karyawan//me')->with('error', 'Profil gagal diperbarui!');
     }
 }
+
+public function hadir()
+{
+    $code = $this->request->getPost('code'); // Ambil kode dari AJAX
+    $modelQR = new QRCodeModel();
+    $modelAbsensi = new AbsensiModel();
+    $today = date('Y-m-d');
+    log_message('info', $code);
+
+
+    // Cari kode yang cocok di database
+    $qrCode = $modelQR->where('uniqueCode', $code)
+                    ->first();
+
+    if ($qrCode) {
+        $data = [
+            'user_id' => session('user_data')['UserID'],
+            'tanggal' => $today,
+            'tipe' => 'Hadir'
+            
+        ];
+        log_message('info', 'Data absensi: ' . json_encode($data));
+
+        $hadir = $modelAbsensi->insert($data);
+
+        if ($hadir) {
+            // Kembalikan respons sukses
+            return $this->response->setJSON(['status' => 'success']);
+        }
+    } else {
+        // Kembalikan respons gagal
+        return $this->response->setJSON(['status' => 'failed', 'message' => 'Kode QR tidak valid. Silakan coba lagi.']);
+    }
+}
+
 }
