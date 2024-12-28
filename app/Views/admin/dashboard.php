@@ -166,7 +166,7 @@ function showTable(status) {
                         <?php endforeach ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="4">Tidak ada karyawan yang sakit hari ini.</td>
+                            <td colspan="8">Tidak ada karyawan yang sakit hari ini.</td>
                         </tr>
                     <?php endif ?>
                 </tbody>
@@ -206,7 +206,7 @@ function showTable(status) {
                         <?php endforeach ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="4">Tidak ada karyawan yang cuti hari ini.</td>
+                            <td colspan="8">Tidak ada karyawan yang cuti hari ini.</td>
                         </tr>
                     <?php endif ?>
                 </tbody>
