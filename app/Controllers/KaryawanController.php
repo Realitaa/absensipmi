@@ -129,13 +129,13 @@ public function karyawan($id)
 {
     $modelUser = new UserModel();
     $modelAbsensi = new AbsensiModel();
-    if ($id = 'me') {
+    if ($id == 'me') {
         $id = session('user_data')['UserID'];
     }
     $karyawan = $modelUser->select('id, nama, nama_pengguna, email, no_telepon, jabatan, foto')->find($id);
 
     if ($karyawan) {
-    $absensi = $modelAbsensi->select('absensi.id AS ID, absensi.tanggal, absensi.tipe, absensi.tanggal, absensi.created_at AS waktu, c.judul, c.deskripsi, s.judul, s.deskripsi')
+    $absensi = $modelAbsensi->select('absensi.id AS ID, absensi.tanggal, absensi.tipe, TIME(absensi.created_at) AS waktu, c.judul, c.deskripsi, c.status, s.judul, s.deskripsi, s.status')
         ->join('cuti c', 'c.absensi_id = absensi.id', 'left')
         ->join('sakit s', 's.absensi_id = absensi.id', 'left')
         ->where('absensi.user_id', $id)
@@ -148,7 +148,8 @@ public function karyawan($id)
         'title' => 'Profil Karyawan',
         'karyawan' => $karyawan,
         'absensi' => $absensi,
-        'authority' => '', // Membatasi tindakan user
+        'authority' => session('user_data')['Role'], // Membatasi tindakan user
+        'current_page' => 'karyawan', // Dibutuhkan jika view diakses admin
     ];
     return view('karyawan/profile', $data);
 }
@@ -156,17 +157,20 @@ public function karyawan($id)
 public function updateKaryawan()
 {
     $model = new UserModel();
-
     $id = session('user_data')['UserID'];
 
+    // Validasi input form
     $validation = $this->validate([
-        'email' => 'valid_email',
-        'telepon' => 'numeric|min_length[10]|max_length[15]',
-        'confirm_password' => 'matches[password]',
+        'email' => 'permit_empty|valid_email',
+        'telepon' => 'permit_empty|numeric|min_length[10]|max_length[15]',
+        'password' => 'permit_empty',
+        'confirm_password' => 'permit_empty|matches[password]',
+        'avatar' => 'permit_empty|is_image[avatar]|max_size[avatar,1024]|mime_in[avatar,image/jpg,image/jpeg,image/png]'
     ]);
-    
+
     if (!$validation) {
-        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors())->with('error', 'Data tidak valid!');
+        $errors = implode(', ', $this->validator->getErrors()); // Gabungkan array menjadi string
+        return redirect()->back()->withInput()->with('error', $errors);
     }
 
     // Ambil data dari form
@@ -181,21 +185,48 @@ public function updateKaryawan()
         $data['password'] = password_hash($password, PASSWORD_BCRYPT);
     }
 
+    // Periksa apakah folder userProfile sudah ada, jika belum buat foldernya
+    $userProfileDir = FCPATH . 'userProfile';
+    if (!is_dir($userProfileDir)) {
+        mkdir($userProfileDir, 0777, true); // Buat folder dengan permission 0777 dan buat subfolder jika diperlukan
+    }
+
+    // Proses file upload (jika ada)
+    $avatar = $this->request->getFile('avatar');
+    if ($avatar && $avatar->isValid() && !$avatar->hasMoved()) {
+        // Ambil informasi karyawan sebelumnya untuk cek foto lama
+        $karyawan = $model->find($id);
+        $oldPhotoPath = $karyawan['foto']; // Path foto lama dari database
+
+        // Hapus foto lama jika ada
+        if (!empty($oldPhotoPath) && file_exists(FCPATH . 'userProfile/' . $oldPhotoPath)) {
+            unlink(FCPATH . 'userProfile/' . $oldPhotoPath);
+        }
+
+        // Pindahkan file ke folder tujuan
+        $newFileName = $avatar->getRandomName();
+        $avatar->move($userProfileDir, $newFileName);
+
+        // Simpan path file baru ke database
+        $data['foto'] = $newFileName;
+    }
+
     // Update data di database
     $updated = $model->update($id, $data);
 
     if ($updated) {
         if (!empty($password)) {
             $session = session();
-            $session->destroy();  // Menghancurkan semua data sesi
-            return redirect()->to('/')->with('success', 'Password di perbarui. Silahkan login ulang.');
+            $session->destroy(); // Menghancurkan semua data sesi
+            return redirect()->to('/?success=' . urlencode('Password diperbarui. Silahkan login ulang.'));
         } else {
             return redirect()->to('/karyawan/me')->with('success', 'Profil berhasil diperbarui!');
         }
     } else {
-        return redirect()->to('/karyawan//me')->with('error', 'Profil gagal diperbarui!');
+        return redirect()->to('/karyawan/me')->with('error', 'Profil gagal diperbarui!');
     }
 }
+
 
 public function hadir()
 {

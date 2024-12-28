@@ -46,9 +46,9 @@
                         <label for="telepon" class="text-primary">Nomor Telepon</label>
                         <input type="tel" name="telepon" id="email" class="form-control <?= session('errors.telepon') ? 'is-invalid' : '' ?>" 
                         placeholder="Masukkan nomor telepon" value="<?= old('telepon') ?>">
-                        <?php if (session('errors.email')) : ?>
+                        <?php if (session('errors.telepon')) : ?>
                             <div class="invalid-feedback">
-                                <?= session('errors.email') ?>
+                                <?= session('errors.telepon') ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -66,7 +66,7 @@
 
                     <div class="mt-4">
                         <button type="submit" class="btn btn-success">
-                            <i class="fas fa-user-plus"></i> Tambah Admin
+                            <i class="fas fa-user-plus"></i> Tambah Karyawan
                         </button>
                     </div>
                 </form>

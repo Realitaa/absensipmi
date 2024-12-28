@@ -10,7 +10,7 @@
     <div class="d-flex justify-content-between align-items-center">
         <div>
             <h3 class="">Tabel Absensi Harian</h3>
-            <p>Tanggal: <input type="text" id="tanggal" name="tanggal" placeholder="Pilih tanggal" value="<?= date('d-m-Y', strtotime('-1 day')); ?>"></p>
+            <p>Tanggal: <input type="text" id="tanggal" name="tanggal" placeholder="Pilih tanggal" value="<?= date('d-m-Y'); ?>"></p>
         </div>
         <button class="btn btn-success" id="export-harian"><i class="bi bi-filetype-xlsx" style="font-size: 20px;"></i>    Export to xlsx</button>
     </div>
@@ -171,14 +171,23 @@
                     let summary = { H: 0, S: 0, C: 0, TK: 0 };
 
                     for (let i = 1; i <= 30; i++) {
-                        const absensi = item.absensi[i] || '';
-                        const abbreviation = absensi.charAt(0).toUpperCase();
+                        let absensi = item.absensi[i] || '';
+                        let abbreviation = '';
+
+                        // Memeriksa apakah absensi adalah 'Tanpa Keterangan'
+                        if (absensi === 'Tanpa Keterangan') {
+                            abbreviation = 'TK';
+                        } else {
+                            abbreviation = absensi.charAt(0).toUpperCase();
+                        }
+
                         row += `<td>${abbreviation}</td>`;
 
+                        // Menambahkan ke summary berdasarkan abbreviation
                         if (abbreviation === 'H') summary.H++;
                         if (abbreviation === 'S') summary.S++;
                         if (abbreviation === 'C') summary.C++;
-                        if (abbreviation === 'T') summary.TK++;
+                        if (abbreviation === 'TK') summary.TK++;
                     }
 
                     row += `
@@ -204,8 +213,8 @@
     }
 
     // Panggil fungsi untuk memuat data saat halaman dimuat
-    loadDailyData("<?= date('d-m-Y', strtotime('-1 day')); ?>");
-    loadMonthlyData("<?= date('m-Y', strtotime('-1 day')); ?>");
+    loadDailyData("<?= date('d-m-Y'); ?>");
+    loadMonthlyData("<?= date('m-Y'); ?>");
 });
 
     // Ekspor Tabel Harian ke Excel

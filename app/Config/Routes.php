@@ -16,7 +16,7 @@ $routes->group('', ['filter' => 'auth:karyawan'], static function ($routes) {
     $routes->get('kehadiran', 'KaryawanController::kehadiran');
     $routes->post('kehadiran/hadir', 'KaryawanController::hadir');
     $routes->post('ketidakhadiran', 'KaryawanController::ketidakhadiran');
-    $routes->get('karyawan/(:alphanum)', 'KaryawanController::karyawan/$1'); //Dapat diakses admin
+    $routes->get('karyawan/(:alphanum)', 'KaryawanController::karyawan/$1');
     $routes->post('karyawan/update/me', 'KaryawanController::updateKaryawan/$1'); 
 });
 
@@ -39,6 +39,7 @@ $routes->group('administrator', ['filter' => 'auth:admin'], function ($routes) {
     $routes->get('absensi/getAttendanceLogs', 'AdminController::getLogs');
 
     // Menu Karyawan
+    $routes->get('karyawan/detail/(:num)', 'KaryawanController::karyawan/$1');
     // Menu Karyawan : Tambah Karyawan
     $routes->get('karyawan', 'AdminController::karyawan');
     $routes->get('karyawan/add', 'AdminController::addKaryawan');

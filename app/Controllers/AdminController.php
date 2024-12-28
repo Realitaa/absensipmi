@@ -119,8 +119,6 @@ class AdminController extends BaseController
         $validation = $this->validate([
             'nama_lengkap' => 'required|min_length[3]|max_length[50]',
             'nama_pengguna' => 'required|min_length[3]|max_length[50]',
-            'email' => 'valid_email',
-            'telepon' => 'numeric|min_length[10]|max_length[15]',
             'jabatan' => 'required'
         ]);
 

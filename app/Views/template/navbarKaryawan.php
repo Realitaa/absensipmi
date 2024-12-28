@@ -22,7 +22,7 @@
             <?php endif ?>
             <div class="dropdown">
                 <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="<?= session('user_data')['foto'] ?? '/user.png'; ?>" alt="User Avatar" width="30" height="30" class="rounded-circle">
+                    <img src="<?= !empty(session('user_data')['Foto']) ? '/userProfile/' . session('user_data')['Foto'] : '/user.png' ; ?>" alt="User Avatar" width="30" height="30" class="rounded-circle">
                     <span class="ms-2"><?= session('user_data')['Username']; ?></span> <!-- Ganti dengan username pengguna yang diambil dari session -->
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">

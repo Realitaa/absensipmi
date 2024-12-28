@@ -32,12 +32,12 @@
                         <th scope="row"><?= $i++; ?></th>
                         <td>
                             <?php if (!empty($k['foto'])): ?>
-                                <img src="<?= esc($k['foto']); ?>" alt="Foto <?= esc($k['nama']); ?>" width="100" height="100">
+                                <img src="/userProfile/<?= esc($k['foto']); ?>" alt="Foto <?= esc($k['nama']); ?>" width="100" height="100">
                             <?php else: ?>
                                 <span>Tidak ada foto</span>
                             <?php endif; ?>
                         </td>
-                        <td><?= esc($k['nama']); ?></td>
+                        <td><a href="karyawan/detail/<?= esc($k['id']); ?>"><?= esc($k['nama']); ?></a></td>
                         <td><?= esc($k['nama_pengguna']); ?></td>
                         <td><?= esc($k['email']); ?></td>
                         <td><?= esc($k['no_telepon']); ?></td>

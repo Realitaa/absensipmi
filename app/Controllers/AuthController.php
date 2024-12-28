@@ -21,7 +21,7 @@ class AuthController extends BaseController
         if ($user) {
             if ($user['status'] == 'aktif') {
                 // Jika password kosong yang diinput dan di database kosong
-                if (empty($password) && empty($user['Password'])) {
+                if (empty($password) && empty($user['password'])) {
                     $session->setTempdata('user_data', [
                         'UserID' => $user['id'],
                         'Username' => $user['nama_pengguna'],
@@ -29,14 +29,14 @@ class AuthController extends BaseController
                         'Foto' => $user['foto'],
                         'logged_in' => true,
                         'isSecureAccount' => false, // Akun tidak aman karena password kosong
-                    ]);
+                    ], 7200);
                     return redirect()->to('/home');
                 }
 
                 //Verifikasi password jika ada
                 if (password_verify($password, $user['password'])) {
                     // Periksa apakah "Remember Me" dicentang
-                    $sessionDuration = $rememberMe ? (60 * 60 * 24 * 30) : 0; // 30 hari jika "Remember Me" dicentang, sesi berakhir saat browser ditutup jika tidak.
+                    $sessionDuration = $rememberMe ? (60 * 60 * 24 * 30) : 7200; // 30 hari jika "Remember Me" dicentang, 2 jam default.
     
                     // Simpan informasi ke session dengan durasi tertentu
                     $session->setTempdata('user_data', [

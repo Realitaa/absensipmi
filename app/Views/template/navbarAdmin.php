@@ -30,7 +30,8 @@
                 <!-- Profil di Navbar Collapse -->
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center" href="/profile">
-                        <img src="https://via.placeholder.com/30" alt="User Avatar" width="30" height="30" class="rounded-circle">
+                    <img src="<?= !empty(session('user_data')['Foto']) ? '/userProfile/' . session('user_data')['Foto'] : '/user.png' ; ?>" alt="User Avatar" width="30" height="30" class="rounded-circle">
+
                         <span class="ms-2"><?= session('user_data')['Username']; ?></span>
                     </a>
                 </li>
@@ -42,7 +43,8 @@
                 <div id="txt"></div>
                 <!-- Profil di Navbar untuk Desktop -->
                 <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://via.placeholder.com/30" alt="User Avatar" width="30" height="30" class="rounded-circle">
+                <img src="<?= !empty(session('user_data')['Foto']) ? '/userProfile/' . session('user_data')['Foto'] : '/user.png' ; ?>" alt="User Avatar" width="30" height="30" class="rounded-circle">
+
                     <span class="ms-2"><?= session('user_data')['Username']; ?></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">

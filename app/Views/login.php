@@ -51,6 +51,12 @@
 </head>
 <body>
   <div class="login-container">
+  <?php if (isset($_GET['success'])) : ?>
+    <div class="alert alert-success">
+        <?= htmlspecialchars($_GET['success']) ?>
+    </div>
+<?php endif; ?>
+
   <?php include 'template/alertMessage.php' ?>
     <h1>Login</h1>
     <form action="login" method="post">
@@ -71,5 +77,6 @@
       </div>
     </form>
   </div>
+  <script src="template.js"></script>
 </body>
 </html>
