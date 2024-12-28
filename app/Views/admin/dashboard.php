@@ -23,8 +23,8 @@
 </style>
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h2 class="ps-3">Selamat Datang Admin Admin1</h2>
-                <p class="ps-3">Berikut ini adalah laporan singkat kehadiran Karyawan PMI Kota Medan hari ini.</p>
+                <h2 class="ps-3">Selamat Datang Administrator <?= session('user_data')['Username']; ?></h2>
+                <p class="ps-3">Berikut ini adalah laporan singkat kehadiran Karyawan PMI Kota Medan hari ini (di update setiap 10 detik).</p>
             </div>
             <a href="absensi" class="btn btn-primary m-3">Mulai Barcode Absensi</a>
         </div>
@@ -33,7 +33,7 @@
         <div class="container px-5">
         <div class="row justify-content-center">
             <!-- Card Hadir -->
-            <div class="col-6 col-sm-6 col-md-3 mb-4">
+            <div class="col-6 col-sm-6 col-md-3 mb-4" onclick="showTable('hadir')">
                 <div class="card align-items-center" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" onclick="showTable('hadir')">
                     <div class="position-relative pt-3">
                         <img src="/user.png" class="card-img-top" alt="Karyawan Hadir" style="width: 100px;">
@@ -41,46 +41,46 @@
                     </div>
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                         <h2>Hadir</h2>
-                        <h3 class="mb-0" style="font-size: 2rem;"><?= esc(count($karyawan_hadir)); ?></h3>
+                        <h3 class="mb-0" style="font-size: 2rem;"><span id="hadir-count">0</span></h3>
                     </div>
                 </div>
             </div>
 
             <!-- Card Sakit -->
-            <div class="col-6 col-sm-6 col-md-3 mb-4">
+            <div class="col-6 col-sm-6 col-md-3 mb-4" onclick="showTable('sakit')">
                 <div class="card align-items-center" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" onclick="showTable('sakit')">
                     <div class="position-relative pt-3">
                         <img src="/thermometer.png" class="card-img-top" alt="Karyawan Sakit" style="width: 100px;">
                     </div>
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                         <h2>Sakit</h2>
-                        <h3 class="mb-0" style="font-size: 2rem;"><?= esc(count($karyawan_sakit)); ?></h3>
+                        <h3 class="mb-0" style="font-size: 2rem;"><span id="sakit-count">0</span></h3>
                     </div>
                 </div>
             </div>
 
             <!-- Card Cuti -->
-            <div class="col-6 col-sm-6 col-md-3 mb-4">
+            <div class="col-6 col-sm-6 col-md-3 mb-4" onclick="showTable('cuti')">
                 <div class="card align-items-center" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" onclick="showTable('cuti')">
                     <div class="position-relative pt-3">
                         <img src="/beach-umbrella.png" class="card-img-top" alt="Karyawan Cuti" style="width: 100px;">
                     </div>
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                         <h2>Cuti</h2>
-                        <h3 class="mb-0" style="font-size: 2rem;"><?= esc(count($karyawan_cuti)); ?></h3>
+                        <h3 class="mb-0" style="font-size: 2rem;"><span id="cuti-count">0</span></h3>
                     </div>
                 </div>
             </div>
 
             <!-- Card Tanpa Keterangan -->
-            <div class="col-6 col-sm-6 col-md-3 mb-4">
+            <div class="col-6 col-sm-6 col-md-3 mb-4" onclick="showTable('tanpaKeterangan')">
                 <div class="card align-items-center" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" onclick="showTable('tanpaKeterangan')">
                     <div class="position-relative">
                         <i class="bi bi-question-lg text-danger" style="font-size: 80px;"></i>
                     </div>
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                         <h4>Tanpa Keterangan</h4>
-                        <h3 class="mb-0" style="font-size: 2rem;"><?= esc(count($karyawan_tanpaKeterangan)); ?></h3>
+                        <h3 class="mb-0" style="font-size: 2rem;"><span id="tanpaKeterangan-count">0</span></h3>
                     </div>
                 </div>
             </div>
@@ -94,168 +94,86 @@
     </div>
 
 <script>
-// Fungsi untuk menampilkan tabel sesuai card yang diklik
+let selectedCard = 'hadir';
+
 function showTable(status) {
-        let tableContainer = document.getElementById('table-container');
-        let tableHtml = '';
+    let tableContainer = document.getElementById('table-container');
+    selectedCard = status;
 
-        // Menentukan tabel yang sesuai dengan status
-        if (status === 'hadir') {
-            tableHtml = `
-                <h3 class="mt-3">Tabel Kehadiran</h3>
-                <table class="table table-bordered table-striped text-center align-middle">
-                <thead>
-                    <tr>
-                    <th scope="col" width="10px">No.</th>
-                    <th scope="col">Nama</th>
-                    <th scope="col">Jabatan</th>
-                    <th scope="col">Waktu</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php 
-                        $i = 1;
-                        if (!empty($karyawan_hadir)): ?>
-                        <?php foreach ($karyawan_hadir as $kehadiran): ?>
-                            <tr>
-                            <th scope="row"><?= $i++ ?></th>
-                            <td><a href="karyawan/"<?= esc($kehadiran['kID']); ?>><?= esc($kehadiran['nama']); ?></a></td>
-                            <td><?= esc($kehadiran['jabatan']); ?></td>
-                            <td><?= esc($kehadiran['waktu']); ?></td>
-                            </tr>
-                        <?php endforeach ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="4">Belum ada yang hadir hari ini.</td>
-                        </tr>
-                    <?php endif ?>
-                </tbody>
-                </table>
-            `;
-        } else if (status === 'sakit') {
-            tableHtml = `
-                <h3 class="mt-3">Tabel Sakit</h3>
-                <table class="table table-bordered table-striped text-center align-middle">
-                <thead>
-                    <tr>
-                    <th scope="col" width="10px">No.</th>
-                    <th scope="col">Nama</th>
-                    <th scope="col">Jabatan</th>
-                    <th scope="col">Judul</th>
-                    <th scope="col">Deskripsi</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Waktu Pengajuan</th>
-                    <th scope="col">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                        $i = 1;
-                        if (!empty($karyawan_sakit)): ?>
-                        <?php foreach ($karyawan_sakit as $kesakitan): ?>
-                            <tr>
-                            <th scope="row"><?= $i++ ?></th>
-                            <td><a href="karyawan/"<?= esc($kehadiran['kID']); ?>><?= esc($kehadiran['nama']); ?></a></td>
-                            <td><?= esc($kesakitan['jabatan']); ?></td>
-                            <td><?= esc($kesakitan['judul']); ?></td>
-                            <td><?= esc($kesakitan['deskripsi']); ?></td>
-                            <td><?= esc($kesakitan['status']); ?></td>
-                            <td><?= esc($kesakitan['waktu']); ?></td>
-                            <td><a class="btn btn-primary">Rincian</a></td>
-                            </tr>
-                        <?php endforeach ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="8">Tidak ada karyawan yang sakit hari ini.</td>
-                        </tr>
-                    <?php endif ?>
-                </tbody>
-                </table>
-            `;
-        } else if (status === 'cuti') {
-            tableHtml = `
-                <h3 class="mt-3">Tabel Cuti</h3>
-                <table class="table table-bordered table-striped text-center align-middle">
-                <thead>
-                    <tr>
-                    <th scope="col" width="10px">No.</th>
-                    <th scope="col">Nama</th>
-                    <th scope="col">Jabatan</th>
-                    <th scope="col">Judul</th>
-                    <th scope="col">Deskripsi</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Waktu Pengajuan</th>
-                    <th scope="col">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                        $i = 1;
-                        if (!empty($karyawan_cuti)): ?>
-                        <?php foreach ($karyawan_cuti as $cuti): ?>
-                            <tr>
-                            <th scope="row"><?= $i++ ?></th>
-                            <td><a href="karyawan/"<?= esc($kehadiran['kID']); ?>><?= esc($kehadiran['nama']); ?></a></td>
-                            <td><?= esc($cuti['jabatan']); ?></td>
-                            <td><?= esc($cuti['judul']); ?></td>
-                            <td><?= esc($cuti['deskripsi']); ?></td>
-                            <td><?= esc($cuti['status']); ?></td>
-                            <td><?= esc($cuti['waktu']); ?></td>
-                            <td><a class="btn btn-primary">Rincian</a></td>
-                            </tr>
-                        <?php endforeach ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="8">Tidak ada karyawan yang cuti hari ini.</td>
-                        </tr>
-                    <?php endif ?>
-                </tbody>
-                </table>
-            `;
-        } else if (status === 'tanpaKeterangan') {
-            tableHtml = `
-                <h3 class="mt-3">Tabel Tanpa Keterangan</h3>
-                <table class="table table-bordered table-striped text-center align-middle">
-                <thead>
-                    <tr>
-                    <th scope="col" width="10px">No.</th>
-                    <th scope="col">Nama</th>
-                    <th scope="col">Jabatan</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">No Telepon</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                        $i = 1;
-                        if (!empty($karyawan_tanpaKeterangan)): ?>
-                        <?php foreach ($karyawan_tanpaKeterangan as $tK): ?>
-                            <tr>
-                            <th scope="row"><?= $i++ ?></th>
-                            <td><a href="karyawan/<?= esc($tK['kID']); ?>"><?= esc($tK['nama']); ?></a></td>
-                            <td><?= esc($tK['jabatan']); ?></td>
-                            <td><a href="mailto:<?= esc($tK['email']); ?>"><?= esc($tK['email']); ?></a></td>
-                            <td><a href="https://wa.me/<?= esc($tK['no_telepon']); ?>"><?= esc($tK['no_telepon']); ?></a></td>
-                            <td><a class="btn btn-primary">Rincian</a></td>
-                            </tr>
-                        <?php endforeach ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="6">Absensi karyawan hari ini sudah selesai.</td>
-                        </tr>
-                    <?php endif ?>
-                </tbody>
-                </table>
-            `;
-        }
+        fetch('/administrator/getDashboardData')
+            .then(response => response.json())
+            .then(data => {
+                // Mengisi jumlah karyawan pada setiap card
+                document.querySelector('#hadir-count').textContent = data.hadir;
+                document.querySelector('#sakit-count').textContent = data.sakit;
+                document.querySelector('#cuti-count').textContent = data.cuti;
+                document.querySelector('#tanpaKeterangan-count').textContent = data.tanpaKeterangan;
+            })
+            .catch(error => console.error('Error fetching data:', error));
 
-        // Menampilkan tabel yang sesuai
-        tableContainer.innerHTML = tableHtml;
-    }
+    // Memulai permintaan AJAX
+    fetch(`/administrator/getTableData/${status}`)
+        .then((response) => response.json())
+        .then((result) => {
+            let tableHtml = `<h3 class="mt-3">Tabel ${capitalizeFirstLetter(status)}</h3>`;
+            tableHtml += `<table class="table table-bordered table-striped text-center align-middle">
+                            <thead>
+                                <tr>
+                                    <th scope="col" width="10px">No.</th>
+                                    <th scope="col">Nama</th>
+                                    <th scope="col">Jabatan</th>`;
+            if (status === 'sakit' || status === 'cuti') {
+                tableHtml += `<th scope="col">Judul</th>
+                              <th scope="col">Deskripsi</th>
+                              <th scope="col">Status</th>
+                              <th scope="col">Waktu Pengajuan</th>`;
+            } else if (status === 'tanpaKeterangan') {
+                tableHtml += `<th scope="col">Email</th>
+                              <th scope="col">No Telepon</th>`;
+            }
+            tableHtml += `</tr></thead><tbody>`;
 
-    // Menampilkan tabel Hadir secara default
-    showTable('hadir');
+            if (result.data.length > 0) {
+                result.data.forEach((item, index) => {
+                    tableHtml += `<tr>
+                                    <th scope="row">${index + 1}</th>
+                                    <td><a href="karyawan/${item.kID}">${item.nama}</a></td>
+                                    <td>${item.jabatan}</td>`;
+                    if (status === 'sakit' || status === 'cuti') {
+                        tableHtml += `<td>${item.judul}</td>
+                                      <td>${item.deskripsi}</td>
+                                      <td>${item.status}</td>
+                                      <td>${item.waktu}</td>`;
+                    } else if (status === 'tanpaKeterangan') {
+                        tableHtml += `<td><a href="mailto:${item.email}">${item.email}</a></td>
+                                      <td><a href="https://wa.me/${item.no_telepon}">${item.no_telepon}</a></td>`;
+                    }
+                    tableHtml += `</tr>`;
+                });
+            } else {
+                tableHtml += `<tr><td colspan="8">Tidak ada data untuk status "${status}".</td></tr>`;
+            }
+
+            tableHtml += `</tbody></table>`;
+            tableContainer.innerHTML = tableHtml;
+        })
+        .catch((error) => {
+            tableContainer.innerHTML = `<p class="text-danger">Gagal memuat data: ${error.message}</p>`;
+        });
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+// Tampilkan tabel "Hadir" secara default
+showTable('hadir');
+
+
+setInterval(function() {
+    showTable(selectedCard);
+}, 10000);
+
 </script>
 
 <?= $this->endSection('content') ?>

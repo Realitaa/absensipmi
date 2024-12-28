@@ -14,31 +14,64 @@ class AdminController extends BaseController
     // Method untuk Menu Dashboard
     public function dashboard()
     {
+        $data = [
+            'title' => 'Dashboard Admin',
+            'current_page' => 'dashboard',
+        ];
+        return view('admin/dashboard', $data);
+    }
+
+    public function getDashboardData()
+    {
+        $modelUser = new UserModel();
+        $modelAbsensi = new AbsensiModel();
+        $today = date('Y-m-d');
+        $data = [
+            'hadir' => $modelAbsensi->where('tipe', 'Hadir')->where('tanggal', $today)->countAllResults(),
+            'sakit' => $modelAbsensi->where('tipe', 'Sakit')->where('tanggal', $today)->countAllResults(),
+            'cuti' => $modelAbsensi->where('tipe', 'Cuti')->where('tanggal', $today)->countAllResults(),
+            'tanpaKeterangan' => $modelUser->where('NOT EXISTS (
+                SELECT 1 FROM absensi
+                WHERE users.id = absensi.user_id 
+                AND absensi.tanggal = CURDATE())')
+            ->where('users.status = "aktif"')->countAllResults(),
+        ];
+
+        return $this->response->setJSON($data);
+    }
+
+    public function getTableData($status)
+    {
         $modelUser = new UserModel();
         $modelAbsensi = new AbsensiModel();
         $today = date('Y-m-d');
 
-        $karyawan_hadir = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, TIME(absensi.created_at) AS waktu')
+        switch ($status) {
+            case 'hadir':
+                $data = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, TIME(absensi.created_at) AS waktu')
             ->join('users u', 'absensi.user_id = u.id')
             ->where('tipe', 'Hadir')
             ->where('tanggal', $today)
             ->findAll();
-
-        $karyawan_sakit = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, s.judul, s.deskripsi, s.status, absensi.created_at AS waktu')
+                break;
+            case 'sakit':
+                $data = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, s.judul, s.deskripsi, s.status, absensi.created_at AS waktu')
             ->join('sakit s', 's.absensi_id = absensi.id')
             ->join('users u', 'absensi.user_id = u.id')
             ->where('tipe', 'Sakit')
             ->where('tanggal', $today)
             ->findAll();
-
-        $karyawan_cuti = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, c.judul, c.deskripsi, c.status, absensi.created_at AS waktu')
+                break;
+            case 'cuti':
+                $data = $modelAbsensi->select('u.id AS kID, u.nama, u.jabatan, c.judul, c.deskripsi, c.status, absensi.created_at AS waktu')
             ->join('cuti c', 'absensi.id = c.absensi_id')
             ->join('users u', 'absensi.user_id = u.id')
             ->where('tipe', 'Cuti')
             ->where('tanggal', $today)
             ->findAll();
-
-        $karyawan_tanpaKeterangan = $modelUser
+                break;
+            case 'tanpaKeterangan':
+                $data = $modelUser
             ->select('users.id AS kID, users.nama, users.jabatan, users.status, users.email, users.no_telepon')
             ->where('NOT EXISTS (
             SELECT 1 FROM absensi
@@ -46,16 +79,13 @@ class AdminController extends BaseController
             AND absensi.tanggal = CURDATE())')
             ->where('users.status = "aktif"')
             ->findAll();
+                break;
+            default:
+                $data = [];
+                break;
+        }
 
-        $data = [
-            'title' => 'Dashboard Admin',
-            'current_page' => 'dashboard',
-            'karyawan_hadir' => $karyawan_hadir,
-            'karyawan_sakit' => $karyawan_sakit,
-            'karyawan_cuti' => $karyawan_cuti,
-            'karyawan_tanpaKeterangan' => $karyawan_tanpaKeterangan,
-        ];
-        return view('admin/dashboard', $data);
+        return $this->response->setJSON(['status' => $status, 'data' => $data]);
     }
 
     // Method untuk Menu Karyawan
@@ -111,9 +141,9 @@ class AdminController extends BaseController
         $inserted = $model->insert( $data);
 
         if ($inserted) {
-            return redirect()->to('/karyawan')->with('success', 'Karyawan baru ditambahkan!');
+            return redirect()->to('/administrator//karyawan')->with('success', 'Karyawan baru ditambahkan!');
         } else {
-            return redirect()->to('/karyawan')->with('error', 'Gagal menambahkan karyawan!');
+            return redirect()->to('/administrator/karyawan')->with('error', 'Gagal menambahkan karyawan!');
         }
     }
 
@@ -163,9 +193,9 @@ class AdminController extends BaseController
         $updated = $model->update($id, $data);
 
         if ($updated) {
-            return redirect()->to('/karyawan')->with('success', 'Data karyawan berhasil diperbarui!');
+            return redirect()->to('/administrator/karyawan')->with('success', 'Data karyawan berhasil diperbarui!');
         } else {
-            return redirect()->to('/karyawan')->with('error', 'Data karyawan gagal diperbarui!');
+            return redirect()->to('/administrator/karyawan')->with('error', 'Data karyawan gagal diperbarui!');
         }
     }
 
@@ -188,9 +218,9 @@ class AdminController extends BaseController
         
 
         if ($nonactive || $active) {
-            return redirect()->to('/karyawan')->with('success', 'Karyawan ' . $username['nama'] . ' berhasil ' . $status);
+            return redirect()->to('/administrator/karyawan')->with('success', 'Karyawan ' . $username['nama'] . ' berhasil ' . $status);
         } else {
-            return redirect()->to('/karyawan')->with('error', 'Karyawan ' . $username['nama'] . ' gagal ' . $status);
+            return redirect()->to('/administrator/karyawan')->with('error', 'Karyawan ' . $username['nama'] . ' gagal ' . $status);
         }
     }
     
@@ -200,9 +230,9 @@ class AdminController extends BaseController
         $deleted = $model->delete($id);
 
         if ($deleted) {
-            return redirect()->to('/karyawan')->with('success', 'Karyawan berhasil dihapus!');
+            return redirect()->to('/administrator/karyawan')->with('success', 'Karyawan berhasil dihapus!');
         } else {
-            return redirect()->to('/karyawan')->with('error', 'Karyawan gagal dihapus!');
+            return redirect()->to('/administrator/karyawan')->with('error', 'Karyawan gagal dihapus!');
         }
     }
 
@@ -212,9 +242,9 @@ class AdminController extends BaseController
         $reset = $model->update($id, ['password' => '']);
 
         if ($reset) {
-            return redirect()->to('/karyawan')->with('success', 'Password berhasil di reset!');
+            return redirect()->to('/administrator/karyawan')->with('success', 'Password berhasil di reset!');
         } else {
-            return redirect()->to('/karyawan')->with('error', 'Gagal reset password!');
+            return redirect()->to('/administrator/karyawan')->with('error', 'Gagal reset password!');
         }
     }
 
@@ -271,9 +301,9 @@ class AdminController extends BaseController
         $inserted = $model->insert( $data);
 
         if ($inserted) {
-            return redirect()->to('/admin')->with('success', 'Admin baru ditambahkan!');
+            return redirect()->to('/administrator/admin')->with('success', 'Admin baru ditambahkan!');
         } else {
-            return redirect()->to('/admin')->with('error', 'Gagal menambahkan admin baru!');
+            return redirect()->to('/administrator/admin')->with('error', 'Gagal menambahkan admin baru!');
         }
     }
 
@@ -324,9 +354,9 @@ class AdminController extends BaseController
         $updated = $model->update($id, $data);
 
         if ($updated) {
-            return redirect()->to('/admin')->with('success', 'Data admin berhasil diperbarui!');
+            return redirect()->to('/administrator/admin')->with('success', 'Data admin berhasil diperbarui!');
         } else {
-            return redirect()->to('/admin')->with('error', 'Data admin gagal diperbarui!');
+            return redirect()->to('/administrator/admin')->with('error', 'Data admin gagal diperbarui!');
         }
     }
 
@@ -349,9 +379,9 @@ class AdminController extends BaseController
         
 
         if ($nonactive || $active) {
-            return redirect()->to('/admin')->with('success', 'Admin ' . $username['nama'] . ' berhasil ' . $status);
+            return redirect()->to('/administrator/admin')->with('success', 'Admin ' . $username['nama'] . ' berhasil ' . $status);
         } else {
-            return redirect()->to('/admin')->with('error', 'Admin ' . $username['nama'] . ' gagal ' . $status);
+            return redirect()->to('/administrator/admin')->with('error', 'Admin ' . $username['nama'] . ' gagal ' . $status);
         }
     }
     
@@ -361,9 +391,9 @@ class AdminController extends BaseController
         $deleted = $model->delete($id);
 
         if ($deleted) {
-            return redirect()->to('/admin')->with('success', 'Admin berhasil dihapus!');
+            return redirect()->to('/administrator/admin')->with('success', 'Admin berhasil dihapus!');
         } else {
-            return redirect()->to('/admin')->with('error', 'Admin gagal dihapus!');
+            return redirect()->to('/administrator/admin')->with('error', 'Admin gagal dihapus!');
         }
     }
     
@@ -373,9 +403,9 @@ class AdminController extends BaseController
         $reset = $model->update($id, ['password' =>  password_hash('udd123', PASSWORD_BCRYPT)]);
 
         if ($reset) {
-            return redirect()->to('/admin')->with('success', 'Password berhasil di reset!');
+            return redirect()->to('/administrator/admin')->with('success', 'Password berhasil di reset!');
         } else {
-            return redirect()->to('/admin')->with('error', 'Gagal reset password!');
+            return redirect()->to('/administrator/admin')->with('error', 'Gagal reset password!');
         }
     }
 

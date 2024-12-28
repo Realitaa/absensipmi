@@ -1,4 +1,4 @@
-<?= $this->extend('template/templateAdmin'); ?>
+<?= $this->extend('template/navbarAdmin'); ?>
 
 <?= $this->section('content'); ?>
 

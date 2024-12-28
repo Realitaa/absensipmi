@@ -43,7 +43,7 @@
                         <td><?= esc($k['no_telepon']); ?></td>
                         <td><?= esc($k['jabatan']); ?></td>
                         <td><?= esc($k['status']); ?></td>
-                        <td><a href="/karyawan/edit/<?= $k['id']; ?>" class="btn btn-info">Edit</a></td>
+                        <td><a href="karyawan/edit/<?= $k['id']; ?>" class="btn btn-info">Edit</a></td>
                     </tr>
                 <?php endforeach; ?>
             <?php else : ?>

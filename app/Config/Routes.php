@@ -30,6 +30,10 @@ $routes->group('administrator', ['filter' => 'auth:admin'], function ($routes) {
 
     // Dashboard
     $routes->get('dashboard', 'AdminController::dashboard');
+    $routes->get('getDashboardData', 'AdminController::getDashboardData');
+    $routes->get('getTableData/(:segment)', 'AdminController::getTableData/$1');
+
+    // Absensi
     $routes->get('absensi', 'AdminController::absensi');
     $routes->get('absensi/fetchqr', 'AdminController::generateBarcodeAPI');
     $routes->get('absensi/getAttendanceLogs', 'AdminController::getLogs');

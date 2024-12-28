@@ -3,7 +3,7 @@
 <body>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/dashboard">
+        <a class="navbar-brand" href="/administrator/dashboard">
             <img src="https://www.pmimedan.or.id/wp-content/uploads/2021/02/logo-PMIMedan-e1618371991309.png" alt="Logo" height="24" class="d-inline-block align-text-top">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -12,16 +12,16 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link <?= ($current_page === 'dashboard') ? 'active' : ''; ?>" href="dashboard">Dashboard</a>
+                    <a class="nav-link <?= ($current_page === 'dashboard') ? 'active' : ''; ?>" href="/administrator/dashboard">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= ($current_page === 'karyawan') ? 'active' : ''; ?>" href="karyawan">Karyawan</a>
+                    <a class="nav-link <?= ($current_page === 'karyawan') ? 'active' : ''; ?>" href="/administrator/karyawan">Karyawan</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= ($current_page === 'admin') ? 'active' : ''; ?>" href="admin">Admin</a>
+                    <a class="nav-link <?= ($current_page === 'admin') ? 'active' : ''; ?>" href="/administrator/admin">Admin</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= ($current_page === 'laporan') ? 'active' : ''; ?>" href="laporan">Laporan</a>
+                    <a class="nav-link <?= ($current_page === 'laporan') ? 'active' : ''; ?>" href="/administrator/laporan">Laporan</a>
                 </li>
             </ul>
             <div class="me-3 d-none d-lg-block">Waktu Server: <span class="txt"></span></div>
@@ -31,7 +31,7 @@
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center" href="/profile">
                         <img src="https://via.placeholder.com/30" alt="User Avatar" width="30" height="30" class="rounded-circle">
-                        <span class="ms-2">Username</span>
+                        <span class="ms-2"><?= session('user_data')['Username']; ?></span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -70,7 +70,7 @@ let clientOffset = null;
 
 // Mendapatkan waktu server dari API
 function fetchServerTime() {
-    fetch('server-time')
+    fetch('/administrator/server-time')
         .then(response => response.json())
         .then(data => {
             serverTime = data.serverTime; // Waktu server dalam milidetik

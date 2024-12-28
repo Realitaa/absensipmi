@@ -39,7 +39,7 @@
                         <td><?= esc($a['email']); ?></td>
                         <td><?= esc($a['no_telepon']); ?></td>
                         <td><?= esc($a['status']); ?></td>
-                        <td><a href="/admin/edit/<?= $a['id']; ?>" class="btn btn-info">Edit</a></td>
+                        <td><a href="admin/edit/<?= $a['id']; ?>" class="btn btn-info">Edit</a></td>
                     </tr>
                 <?php endforeach ?>
         </tbody>
