@@ -61,7 +61,7 @@
                 </div>
                 <div class="card-body">
                     <p>Jika tidak dapat berhadir, isi formulir berikut. Jelaskan masalah Anda agar formulir ini dapat diterima. Terima kasih atas pemberitahuannya.</p>
-                    <form action="<?= base_url('/ketidakhadiran') ?>" method="post">
+                    <form action="<?= base_url('/ketidakhadiran') ?>" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="tipe" class="text-primary">Tipe</label>
                             <br>
@@ -108,6 +108,18 @@
                             <?php endif; ?>
                         </div>
 
+                        <div class="form-group mt-3">
+                            <label for="lampiran" class="text-primary">Lampiran</label>
+                            <input type="file" name="lampiran[]" id="lampiran" class="form-control <?= session('errors.lampiran') ? 'is-invalid' : '' ?>" multiple>
+                            <?php if (session('errors.lampiran')) : ?>
+                                <div class="invalid-feedback">
+                                    <?= session('errors.lampiran') ?>
+                                </div>
+                            <?php endif; ?>
+                            <!-- List untuk menampilkan file yang dipilih -->
+                            <ol id="file-list" class="mt-3"></ol>
+                        </div>
+
                         <div class="mt-4">
                             <button type="submit" class="btn btn-success">
                                 <i class="fas fa-user-plus"></i> Kirim
@@ -135,6 +147,22 @@ document.getElementById('form_ketidakhadiran').addEventListener('click', functio
         });
     }
 });
+
+document.getElementById('lampiran').addEventListener('change', function (event) {
+        const fileList = event.target.files; // Ambil file yang dipilih
+        const listContainer = document.getElementById('file-list'); // Dapatkan elemen ol
+        listContainer.innerHTML = ''; // Kosongkan daftar sebelumnya
+
+        if (fileList.length > 0) {
+            for (let i = 0; i < fileList.length; i++) {
+                const listItem = document.createElement('li'); // Buat elemen list
+                listItem.textContent = fileList[i].name; // Set nama file
+                listContainer.appendChild(listItem); // Tambahkan ke ol
+            }
+        } else {
+            listContainer.innerHTML = '<li>Tidak ada file yang dipilih.</li>'; // Tampilkan pesan jika kosong
+        }
+    });
 </script>
 
 <?= $this->endSection('content') ?>

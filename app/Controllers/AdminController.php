@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\UserModel;
 use App\Models\AbsensiModel;
+use App\Models\SakitModel;
+use App\Models\CutiModel;
 use App\Models\AdminModel;
 use App\Models\QRCodeModel;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -221,6 +223,33 @@ class AdminController extends BaseController
             return redirect()->to('/administrator/karyawan')->with('error', 'Karyawan ' . $username['nama'] . ' gagal ' . $status);
         }
     }
+
+    public function resetAvatar()
+    {
+        $model = new UserModel();
+        $id = $this->request->getPost('id');
+
+        // Ambil data pengguna berdasarkan ID
+        $user = $model->find($id);
+
+        if ($user && !empty($user['foto'])) {
+            $filePath = FCPATH . 'userProfile/' . $user['foto']; // Path lengkap ke file
+
+            // Periksa apakah file ada, lalu hapus
+            if (is_file($filePath)) {
+                unlink($filePath); // Hapus file dari server
+            }
+        }
+
+        // Reset kolom foto di database
+        $restart = $model->update($id, ['foto' => '']);
+
+        if ($restart) {
+            return redirect()->to('/administrator/karyawan/edit/' . $id)->with('success', 'Avatar sudah di reset.');
+        } else {
+            return redirect()->to('/administrator/karyawan/edit/' . $id)->with('error', 'Avatar gagal di reset.');
+        }
+    }
     
     public function deleteKaryawan($id) {
         $model = new UserModel();
@@ -234,7 +263,7 @@ class AdminController extends BaseController
         }
     }
 
-    public function resetKaryawan($id) {
+    public function resetPassword($id) {
         $model = new UserModel();
 
         $reset = $model->update($id, ['password' => '']);
@@ -243,6 +272,19 @@ class AdminController extends BaseController
             return redirect()->to('/administrator/karyawan')->with('success', 'Password berhasil di reset!');
         } else {
             return redirect()->to('/administrator/karyawan')->with('error', 'Gagal reset password!');
+        }
+    }
+
+    public function deleteAbsensi() {
+        $model = new AbsensiModel();
+        $id = $this->request->getPost('id');
+
+        $deleted = $model->delete($id);
+
+        if ($deleted) {
+            return redirect()->back()->with('success', 'Berhasil menghapus absensi karyawan.');
+        } else {
+            return redirect()->back()->with('error', 'Gagal menghapus absensi karyawan.');
         }
     }
 
@@ -312,7 +354,7 @@ class AdminController extends BaseController
         $admin = $model->find($id);
         $data = [
             'title' => 'Edit ' . $admin['nama'],
-            'current_page' => 'karyawan',
+            'current_page' => 'admin',
             'admin' => $admin,
             'isAdmin' => true
         ];
@@ -360,6 +402,7 @@ class AdminController extends BaseController
 
     public function statusAdmin($id) {
         $model = new AdminModel();
+        $adminAktif = $model->where('status', 'aktif')->countAll();
         $username = $model->select('nama')->find($id);
         $nonactive = false;
         $active = false;
@@ -369,8 +412,12 @@ class AdminController extends BaseController
             $nonactive = $model->update($id, ['status' => 'aktif']);
             $status = 'diaktifkan!';
         } elseif ($action == 'nonactive') {
-            $active = $model->update($id, ['status' => 'nonaktif']);
-            $status = 'dinonaktifkan!';
+            if ($adminAktif > 1) {
+                $active = $model->update($id, ['status' => 'nonaktif']);
+                $status = 'dinonaktifkan!';
+            } else {
+                return redirect()->back()->with('error', 'Minimal ada satu admin yang aktif.');
+            }
         } else {
             return redirect()->back()->with('error', 'Aksi tidak dikenali. Coba refresh halaman.');
         }
@@ -385,13 +432,16 @@ class AdminController extends BaseController
     
     public function deleteAdmin($id) {
         $model = new AdminModel();
-
-        $deleted = $model->delete($id);
-
-        if ($deleted) {
-            return redirect()->to('/administrator/admin')->with('success', 'Admin berhasil dihapus!');
+        $admin = $model->countAll();
+        if ($admin > 1) {
+            $deleted = $model->delete($id);
+            if ($deleted) {
+                return redirect()->to('/administrator/admin')->with('success', 'Admin berhasil dihapus!');
+            } else {
+                return redirect()->to('/administrator/admin')->with('error', 'Admin gagal dihapus!');
+            }
         } else {
-            return redirect()->to('/administrator/admin')->with('error', 'Admin gagal dihapus!');
+            return redirect()->to('/administrator/admin')->with('error', 'Minimal ada satu admin yang aktif');
         }
     }
     
@@ -406,6 +456,87 @@ class AdminController extends BaseController
             return redirect()->to('/administrator/admin')->with('error', 'Gagal reset password!');
         }
     }
+
+    // Method untuk Menu Ketidakhadiran
+    public function ketidakhadiran() {
+        $modelSakit = new SakitModel();
+        $modelCuti = new CutiModel();
+
+        // Data sakit
+        $dataSakit = $modelSakit
+            ->select('u.nama, u.jabatan, u.foto, a.id AS absensiID, "Sakit" AS tipe, sakit.judul, sakit.deskripsi, sakit.status')
+            ->join('absensi a', 'sakit.absensi_id = a.id')
+            ->join('users u', 'a.user_id = u.id')
+            ->where('sakit.status', 'Menunggu')
+            ->findAll();
+
+        // Data cuti
+        $dataCuti = $modelCuti
+            ->select('u.nama, u.jabatan, u.foto, a.id AS absensiID, "Cuti" AS tipe, cuti.judul, cuti.deskripsi, cuti.status')
+            ->join('absensi a', 'cuti.absensi_id = a.id')
+            ->join('users u', 'a.user_id = u.id')
+            ->where('cuti.status', 'Menunggu')
+            ->findAll();
+
+        // Gabungkan data dan hilangkan duplikasi berdasarkan nama
+        $dataGabungan = array_merge($dataSakit, $dataCuti);
+        $dataUnik = [];
+        foreach ($dataGabungan as $item) {
+            $dataUnik[$item['nama']] = $item; // Gunakan nama sebagai kunci untuk menghilangkan duplikasi
+        }
+
+        // Konversi kembali ke array numerik
+        $ketidakhadiran = array_values($dataUnik);
+
+        $data = [
+            'title' => 'Pengajuan Ketidakhadiran',
+            'current_page' => 'ketidakhadiran',
+            'ketidakhadiran' => $ketidakhadiran,
+        ];
+        return view('admin/ketidakhadiran', $data);
+    }
+
+    public function acceptAbsensi() {
+        $modelSakit = new SakitModel();
+        $modelCuti = new CutiModel();
+        $waktu = $this->request->getPost('waktu');
+        $tipe = $this->request->getPost('tipe');
+        $terima = false;
+    
+        if ($tipe == 'Cuti') {
+            $terima = $modelCuti->where('DATE(created_at)', $waktu)->set(['status' => 'Terima'])->update();
+        } elseif ($tipe == 'Sakit') {
+            $terima = $modelSakit->where('DATE(created_at)', $waktu)->set(['status' => 'Terima'])->update();
+        }
+    
+        if ($terima) {
+            return redirect()->to('/administrator/ketidakhadiran')->with('success', 'Formulir Ketidakhadiran sudah diterima');
+        } else {
+            return redirect()->to('/administrator/ketidakhadiran')->with('error', 'Gagal menerima formulir ketidakhadiran');
+        }
+    }
+    
+    public function rejectAbsensi() {
+        $modelSakit = new SakitModel();
+        $modelCuti = new CutiModel();
+        $waktu = $this->request->getPost('waktu');
+        $tipe = $this->request->getPost('tipe');
+        $tolak = false;
+    
+        if ($tipe == 'Cuti') {
+            $tolak = $modelCuti->where('DATE(created_at)', $waktu)->delete();
+        } elseif ($tipe == 'Sakit') {
+            $tolak = $modelSakit->where('DATE(created_at)', $waktu)->delete();
+        }
+
+    
+        if ($tolak) {
+            return redirect()->to('/administrator/ketidakhadiran')->with('success', 'Formulir ketidakhadiran sudah ditolak');
+        } else {
+            return redirect()->to('/administrator/ketidakhadiran')->with('error', 'Gagal menolak formulir ketidakhadiran');
+        }
+    }
+    
 
     // Method untuk Menu Laporan
     public function laporan()
@@ -477,6 +608,8 @@ class AdminController extends BaseController
         }
         return $this->response->setJSON(array_values($result));
     }
+    
+    
 
     // Method untuk Menu Admin
     public function profile($id) {
@@ -550,4 +683,13 @@ class AdminController extends BaseController
     return $this->response->setJSON(['logs' => $logs]);
 }
 
+    public function ketidakhadiranNotif() {
+        $modelCuti = new CutiModel();
+        $modelSakit = new SakitModel();
+
+        $menungguCuti = $modelCuti->where('status', 'Menunggu')->countAll();
+        $menungguSakit = $modelSakit->where('status', 'Menunggu')->countAll();
+
+        return $this->response->setJSON(['notif' => $menungguCuti + $menungguSakit]);
+}
 }

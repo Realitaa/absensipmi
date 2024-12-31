@@ -36,7 +36,7 @@
             <div class="col-6 col-sm-6 col-md-3 mb-4" onclick="showTable('hadir')">
                 <div class="card align-items-center" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);" onclick="showTable('hadir')">
                     <div class="position-relative pt-3">
-                        <img src="/userProfile/user.png" class="card-img-top" alt="Karyawan Hadir" style="width: 100px;">
+                        <img src="/user.png" class="card-img-top" alt="Karyawan Hadir" style="width: 100px;">
                         <img src="/check.png" class="position-absolute" alt="Check" style="bottom: -20px; right: -10px; width: 65px;">
                     </div>
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
@@ -137,7 +137,7 @@ function showTable(status) {
                 result.data.forEach((item, index) => {
                     tableHtml += `<tr>
                                     <th scope="row">${index + 1}</th>
-                                    <td><a href="karyawan/${item.kID}">${item.nama}</a></td>
+                                    <td><a href="karyawan/detail/${item.kID}">${item.nama}</a></td>
                                     <td>${item.jabatan}</td>`;
                     if (status === 'sakit' || status === 'cuti') {
                         tableHtml += `<td>${item.judul}</td>

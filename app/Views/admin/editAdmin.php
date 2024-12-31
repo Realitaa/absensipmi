@@ -8,14 +8,6 @@
                 <h4>Edit Data admin</h4>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-3">
-                        <img src="<?= !empty(esc($admin['foto'])) ? '/userProfile/' . esc($admin['foto']) : '/user.png' ; ?>" alt="Foto <?= esc($admin['nama']); ?>" width="300" height="300">
-                        <?php if (!empty(esc($admin['foto']))) : ?>
-                            <a href="/administrator/admin/avatarReset" class="btn btn-danger mt-3">Reset Avatar</a>
-                        <?php endif ?>
-                    </div>
-                    <div class="col">
                         <form action="<?= base_url('/administrator/admin/update/' . $admin['id']) ?>" method="post">
                             <!-- Nama Pengguna -->
                             <div class="form-group">
@@ -93,8 +85,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
 <?php include 'modalConfirm.php'; ?>
 

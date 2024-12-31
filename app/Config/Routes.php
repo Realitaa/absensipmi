@@ -25,8 +25,9 @@ $routes->group('', ['filter' => 'auth:karyawan'], static function ($routes) {
 $routes->view('/administrator', 'admin/login');
 $routes->post('/administrator/login', 'AuthController::AdminValidation');
 $routes->group('administrator', ['filter' => 'auth:admin'], function ($routes) {
-    // To get server time
+    // Navbar
     $routes->get('server-time', 'TimeController::getServerTime');
+    $routes->get('ketidakhadiranNotif', 'AdminController::ketidakhadiranNotif');
 
     // Dashboard
     $routes->get('dashboard', 'AdminController::dashboard');
@@ -49,7 +50,9 @@ $routes->group('administrator', ['filter' => 'auth:admin'], function ($routes) {
     $routes->post('karyawan/delete/(:num)', 'AdminController::deleteKaryawan/$1');
     $routes->post('karyawan/status/(:num)', 'AdminController::statusKaryawan/$1');
     $routes->post('karyawan/update/(:num)', 'AdminController::updateKaryawan/$1');
-    $routes->post('karyawan/reset/(:num)', 'AdminController::resetKaryawan/$1');
+    $routes->post('karyawan/reset/password/(:num)', 'AdminController::resetPassword/$1');
+    $routes->post('karyawan/reset/avatar', 'AdminController::resetAvatar');
+    $routes->post('karyawan/absensi/delete', 'AdminController::deleteAbsensi');
 
     // Menu Admin
     $routes->get('admin', 'AdminController::admin');
@@ -62,6 +65,11 @@ $routes->group('administrator', ['filter' => 'auth:admin'], function ($routes) {
     $routes->post('admin/update/(:num)', 'AdminController::updateAdmin/$1');
     $routes->post('admin/reset/(:num)', 'AdminController::resetAdmin/$1');
 
+    //Menu Ketidakhadiran
+    $routes->get('ketidakhadiran', 'AdminController::ketidakhadiran');
+    $routes->post('ketidakhadiran/accept/(:num)', 'AdminController::acceptAbsensi/$1');
+    $routes->post('ketidakhadiran/reject/(:num)', 'AdminController::rejectAbsensi/$1');
+
     // Menu Laporan
     $routes->get('laporan', 'AdminController::laporan');
     // Menu Laporan : AJAX
@@ -69,4 +77,11 @@ $routes->group('administrator', ['filter' => 'auth:admin'], function ($routes) {
     $routes->get('laporan/getBulananData', 'AdminController::getBulananData');
 });
 
+// Mendapatkan data Tabel Laporan absensi Bulanan Karyawan
+$routes->get('laporan/getUserBulananData', 'KaryawanController::getUserBulananData');
+
+//Rincian Absensi
+$routes->get('absensi/(:num)', 'KaryawanController::rincianKetidakhadiran/$1');
+
+// Logout Administrator dan Karyawan
 $routes->get('logout/(:segment)', 'AuthController::logout/$1'); 

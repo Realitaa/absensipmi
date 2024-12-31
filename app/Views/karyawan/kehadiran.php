@@ -10,10 +10,12 @@
 </div>
 <div id="reader"></div>
 <p id="result" style="text-align: center; font-size: 1.2em; margin-top: 20px; color: green;"></p>
+<p id="failed" style="text-align: center; font-size: 1.2em; margin-top: 20px; color: red;"></p>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     const resultElement = document.getElementById("result");
+    const failedElement = document.getElementById("failed");
 
     // Inisialisasi scanner menggunakan html5-qrcode
     const html5QrCode = new Html5Qrcode("reader");
@@ -51,14 +53,17 @@
                         }
                     },
                     error: function() {
+                        failedElement.textContent = `Ada kesalahan saat memproses absensi Anda. Coba lagi nanti.`;
                         console.error("Terjadi kesalahan saat memproses absensi.");
                     }
                 });
             },
             errorMessage => {
+                failedElement.textContent = `Kode QR tidak terdeteksi. Gunakan Kode QR yang valid.`;
                 console.log(`QR Code not detected: ${errorMessage}`);
             }
         ).catch(err => {
+            failedElement.textContent = `Tidak dapat membuka kamera.`;
             console.error("Camera start failed:", err);
         });
     }

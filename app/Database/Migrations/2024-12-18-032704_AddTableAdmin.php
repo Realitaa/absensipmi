@@ -46,11 +46,6 @@ class AddTableAdmins extends Migration
                 'constraint' => 255,
                 'null'       => false,
             ],
-            'foto' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 255,
-                'null'       => true,
-            ],
             'created_at' => [
                 'type'    => 'DATETIME',
                 'null'    => true,

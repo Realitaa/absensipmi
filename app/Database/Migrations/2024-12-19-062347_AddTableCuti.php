@@ -30,7 +30,7 @@ class AddTableCuti extends Migration
             ],
             'status' => [
                 'type'       => 'ENUM',
-                'constraint' => ['Terima', 'Tolak', 'Menunggu'],
+                'constraint' => ['Terima', 'Menunggu'],
                 'default'    => 'Menunggu',
                 'null'       => false,
             ],

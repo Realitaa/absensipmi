@@ -35,104 +35,118 @@ class KaryawanController extends BaseController
     }
 
     public function ketidakhadiran()
-{
-    $modelAbsensi = new AbsensiModel();
-    $modelSakit = new SakitModel();
-    $modelCuti = new CutiModel();
-
-    // Validasi input form
-    $validation = $this->validate([
-        'judul' => 'required|max_length[50]',
-        'waktu' => 'required', 
-        'deskripsi' => 'required',
-        'tipe' => 'required',
-    ]);
-
-    if (!$validation) {
-        // Jika validasi gagal, kembali ke halaman sebelumnya
-        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-    }
-
-    // Ambil data yang dikirimkan melalui POST
-    $tipe = $this->request->getPost('tipe');
-    $waktu = $this->request->getPost('waktu');
-    $judul = $this->request->getPost('judul');
-    $deskripsi = $this->request->getPost('deskripsi');
+    {
+        $modelAbsensi = new AbsensiModel();
+        $modelSakit = new SakitModel();
+        $modelCuti = new CutiModel();
     
-    $user_id = session('user_data')['UserID'];
+        // Validasi input form
+        $validation = $this->validate([
+            'judul' => 'required|max_length[50]',
+            'waktu' => 'required', 
+            'deskripsi' => 'required',
+            'tipe' => 'required',
+            'lampiran.*' => 'permit_empty|is_image[lampiran.*]|max_size[lampiran.*,2048]|mime_in[lampiran.*,image/jpg,image/jpeg,image/png,application/pdf]',
+        ]);
     
-    // Parse tanggal dari range (tanggal pertama dan kedua)
-    $tanggalRange = explode(' to ', $waktu);
-
-    // Periksa apakah hanya satu tanggal yang dipilih
-    if (count($tanggalRange) === 1) {
-        $tanggalRange[1] = $tanggalRange[0]; // Jika hanya satu tanggal, jadikan tanggalMulai dan tanggalSelesai sama
-    } elseif (count($tanggalRange) !== 2) {
-        // Jika format tanggal tidak valid
-        return redirect()->back()->with('errors', ['Waktu ketidakhadiran tidak valid.']);
-    }
-
-    $tanggalMulai = date('Y-m-d', strtotime($tanggalRange[0])); // Tanggal mulai
-    $tanggalSelesai = date('Y-m-d', strtotime($tanggalRange[1])); // Tanggal selesai
-
-    // Proses absensi untuk setiap tanggal dalam rentang waktu
-    $currentDate = strtotime($tanggalMulai);
-    $endDate = strtotime($tanggalSelesai);
+        if (!$validation) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
     
-    while ($currentDate <= $endDate) {
-        // Format tanggal untuk setiap iterasi
-        $tanggalAbsensi = date('Y-m-d', $currentDate);
+        // Ambil data POST
+        $tipe = $this->request->getPost('tipe');
+        $waktu = $this->request->getPost('waktu');
+        $judul = $this->request->getPost('judul');
+        $deskripsi = $this->request->getPost('deskripsi');
+        $user_id = session('user_data')['UserID'];
+    
+        // Ambil tanggal
+        $tanggalRange = explode(' to ', $waktu);
+        if (count($tanggalRange) === 1) $tanggalRange[1] = $tanggalRange[0];
+        $tanggalMulai = date('Y-m-d', strtotime($tanggalRange[0]));
+        $tanggalSelesai = date('Y-m-d', strtotime($tanggalRange[1]));
 
-        // Simpan data absensi
-        $dataAbsensi = [
-            'user_id' => $user_id,
-            'tanggal' => $tanggalAbsensi,
-            'tipe' => $tipe,
-        ];
-        $absen = $modelAbsensi->insert($dataAbsensi);
+        // Cek apakah ada tanggal yang sudah terisi
+        $existingDates = $modelAbsensi
+            ->where('user_id', $user_id)
+            ->where('tanggal >=', $tanggalMulai)
+            ->where('tanggal <=', $tanggalSelesai)
+            ->findAll();
 
-        if ($absen) {
-            // Ambil id absensi yang baru disimpan
-            $absensi = $modelAbsensi->where('user_id', $user_id)->where('tanggal', $tanggalAbsensi)->first();
-
-            $sakit = false;
-            $cuti = false;
-            // Simpan data Sakit atau Cuti sesuai tipe
-            if ($tipe == "Sakit") {
-                $dataSakit = [
-                    'absensi_id' => $absensi['id'],
-                    'judul' => $judul,
-                    'deskripsi' => $deskripsi,
-                ];
-                $sakit = $modelSakit->insert($dataSakit);
-            } elseif ($tipe == "Cuti") {
-                $dataCuti = [
-                    'absensi_id' => $absensi['id'],
-                    'judul' => $judul,
-                    'deskripsi' => $deskripsi,
-                ];
-                $cuti = $modelCuti->insert($dataCuti);
+        if (!empty($existingDates)) {
+            $dates = array_column($existingDates, 'tanggal');
+            $dateList = implode(', ', $dates);
+            return redirect()->back()->withInput()->with('error', "Anda sudah mengisi absensi untuk hari-hari berikut: $dateList.");
+        }
+    
+        // Proses lampiran (jika ada)
+        $uploadedFiles = $this->request->getFileMultiple('lampiran');
+        $folderName = null;
+    
+        if (!empty($uploadedFiles)) {
+            $folderName = 'user_' . $user_id . '_' . time(); // Nama folder unik
+            $folderPath = FCPATH . 'lampiran/' . $folderName;
+    
+            if (!is_dir($folderPath)) {
+                mkdir($folderPath, 0755, true); // Buat folder jika belum ada
+            }
+    
+            foreach ($uploadedFiles as $file) {
+                if ($file->isValid() && !$file->hasMoved()) {
+                    $file->move($folderPath);
+                }
             }
         }
-
-        // Lanjutkan ke tanggal berikutnya
-        $currentDate = strtotime("+1 day", $currentDate);
+    
+        // Simpan absensi ke database
+        $currentDate = strtotime($tanggalMulai);
+        $endDate = strtotime($tanggalSelesai);
+        while ($currentDate <= $endDate) {
+            $tanggalAbsensi = date('Y-m-d', $currentDate);
+    
+            $dataAbsensi = [
+                'user_id' => $user_id,
+                'tanggal' => $tanggalAbsensi,
+                'tipe' => $tipe,
+                'lampiran' => $folderName, // Simpan nama folder
+            ];
+            $absen = $modelAbsensi->insert($dataAbsensi);
+    
+            if ($absen) {
+                $absensi = $modelAbsensi->where('user_id', $user_id)->where('tanggal', $tanggalAbsensi)->first();
+                $details = [
+                    'absensi_id' => $absensi['id'],
+                    'judul' => $judul,
+                    'deskripsi' => $deskripsi,
+                ];
+    
+                if ($tipe === "Sakit") {
+                    $modelSakit->insert($details);
+                } elseif ($tipe === "Cuti") {
+                    $modelCuti->insert($details);
+                }
+            }
+    
+            $currentDate = strtotime("+1 day", $currentDate);
+        }
+    
+        return redirect()->to('/home')->with('success', 'Formulir Ketidakhadiran sudah dikirim dan menunggu dikonfirmasi admin. Terima kasih.');
     }
-
-    // Redirect ke halaman sukses jika Sakit atau Cuti berhasil disimpan
-    if ($sakit || $cuti) {
-        return redirect()->to('/home')->with('success', 'Formulir Ketidakhadiran sudah dikirim. Terima kasih.');
-    }
-}
+    
 
 public function karyawan($id)
 {
     $modelUser = new UserModel();
     $modelAbsensi = new AbsensiModel();
+
+    
     if ($id == 'me') {
         $id = session('user_data')['UserID'];
     }
     $karyawan = $modelUser->select('id, nama, nama_pengguna, email, no_telepon, jabatan, foto')->find($id);
+
+    $min_month = $modelAbsensi->select("DATE_FORMAT(MIN(tanggal), '%m-%Y') AS min_date")->where('user_id', $id)->first()['min_date'];
+    $max_month = $modelAbsensi->select("DATE_FORMAT(MAX(tanggal), '%m-%Y') AS max_date")->where('user_id', $id)->first()['max_date'];
 
     if ($karyawan) {
     $absensi = $modelAbsensi->select('absensi.id AS ID, absensi.tanggal, absensi.tipe, TIME(absensi.created_at) AS waktu, c.judul, c.deskripsi, c.status, s.judul, s.deskripsi, s.status')
@@ -150,6 +164,8 @@ public function karyawan($id)
         'absensi' => $absensi,
         'authority' => session('user_data')['Role'], // Membatasi tindakan user
         'current_page' => 'karyawan', // Dibutuhkan jika view diakses admin
+        'min_month' => $min_month,
+        'max_month' => $max_month,
     ];
     return view('karyawan/profile', $data);
 }
@@ -234,8 +250,6 @@ public function hadir()
     $modelQR = new QRCodeModel();
     $modelAbsensi = new AbsensiModel();
     $today = date('Y-m-d');
-    log_message('info', $code);
-
 
     // Cari kode yang cocok di database
     $qrCode = $modelQR->where('uniqueCode', $code)
@@ -248,7 +262,6 @@ public function hadir()
             'tipe' => 'Hadir'
             
         ];
-        log_message('info', 'Data absensi: ' . json_encode($data));
 
         $hadir = $modelAbsensi->insert($data);
 
@@ -262,4 +275,68 @@ public function hadir()
     }
 }
 
+public function getUserBulananData()
+    {
+        $modelAbsensi = new AbsensiModel();
+        // Ambil bulan yang dikirimkan (dari parameter request atau default ke bulan sebelumnya)
+        $bulan = $this->request->getVar('bulan') ?? date('m-Y', strtotime('-1 day'));
+        $id = $this->request->getVar('id');
+        
+        $bulanan = $modelAbsensi
+            ->select('absensi.id, tanggal, tipe, TIME(absensi.created_at) AS waktu, c.status AS cStatus, s.status AS sStatus')
+            ->join('cuti c', 'c.absensi_id = absensi.id', 'left')
+            ->join('sakit s', 's.absensi_id = absensi.id', 'left')
+            ->where('DATE_FORMAT(tanggal, "%m-%Y")', $bulan) 
+            ->where('user_id', $id)
+            ->findAll();
+
+        return $this->response->setJSON($bulanan);
+    }
+
+    public function rincianKetidakhadiran($id) {
+        $modelUser = new UserModel();
+        $modelAbsensi = new AbsensiModel();
+        $modelCuti = new CutiModel();
+        $modelSakit = new SakitModel();
+    
+        // Ambil data absensi berdasarkan ID
+        $absensi = $modelAbsensi->select('id, user_id, tanggal, tipe, DATE(created_at) AS waktu')->find($id);
+        if (!$absensi) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("Data absensi tidak ditemukan.");
+        }
+
+        $karyawan = $modelUser->select('id, nama, jabatan, email, no_telepon')->find($absensi['user_id']);
+    
+        $durasi = $modelAbsensi->select("tipe, MIN(tanggal) AS mulai, MAX(tanggal) AS selesai")
+            ->where('user_id', $absensi['user_id']) // Pastikan hanya untuk user yang sama
+            ->where('DATE(created_at)', $absensi['waktu'])
+            ->groupBy('id') // Tambahkan klausa GROUP BY
+            ->first();
+
+    
+        // Ambil data terkait cuti atau sakit berdasarkan tipe absensi
+        $detail = null;
+        if ($absensi['tipe'] === 'Cuti') {
+            $detail = $modelCuti->select('judul, deskripsi, status, lampiran')
+                ->where('absensi_id', $id)
+                ->first();
+        } elseif ($absensi['tipe'] === 'Sakit') {
+            $detail = $modelSakit->select('judul, deskripsi, status, lampiran')
+                ->where('absensi_id', $id)
+                ->first();
+        }
+    
+        $data = [
+            'title' => 'Rincian Absensi',
+            'authority' => session('user_data')['Role'],
+            'current_page' => 'karyawan',
+            'absensi' => $absensi,
+            'karyawan' => $karyawan,
+            'durasi' => $durasi,
+            'detail' => $detail,
+        ];
+    
+        return view('karyawan/rincianKetidakhadiran', $data);
+    }
+    
 }

@@ -13,7 +13,10 @@
                         <div class="d-flex flex-column align-items-center">
                             <img src="<?= !empty(esc($karyawan['foto'])) ? '/userProfile/' . esc($karyawan['foto']) : '/user.png' ; ?>" alt="Foto <?= esc($karyawan['nama']); ?>" width="300" height="300">
                             <?php if (!empty(esc($karyawan['foto']))) : ?>
-                                <a href="/administrator/karyawan/avatarReset" class="btn btn-danger mt-3">Reset Avatar</a>
+                                <form action="/administrator/karyawan/reset/avatar" method="post">
+                                    <input type="hidden" name="id" value="<?= esc($karyawan['id']); ?>">
+                                    <button type="submit" class="btn btn-danger mt-3">Reset Avatar</button>
+                                </form>
                             <?php endif ?>
                         </div>
                     </div>

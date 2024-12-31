@@ -21,6 +21,15 @@
                     <a class="nav-link <?= ($current_page === 'admin') ? 'active' : ''; ?>" href="/administrator/admin">Admin</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link position-relative <?= ($current_page === 'ketidakhadiran') ? 'active' : ''; ?>" id="notification" href="/administrator/ketidakhadiran">
+                        Ketidakhadiran
+                        <span class="position-absolute top-0 start-10 translate-middle badge rounded-pill bg-danger" style="display: none;">
+                            <span id="notif-number"></span>
+                            <span class="visually-hidden">unread messages</span>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link <?= ($current_page === 'laporan') ? 'active' : ''; ?>" href="/administrator/laporan">Laporan</a>
                 </li>
             </ul>
@@ -108,6 +117,32 @@ function checkTime(i) {
 
 // Mulai sinkronisasi waktu
 fetchServerTime();
+
+function checkNotifications() {
+        fetch('/administrator/ketidakhadiranNotif')
+            .then(response => response.json())
+            .then(data => {
+                const notifNumber = document.getElementById('notif-number');
+                const notificationLink = document.getElementById('notification');
+
+                if (data.notif > 0) {
+                    notifNumber.textContent = data.notif; // Tampilkan jumlah notifikasi
+                    notifNumber.parentElement.style.display = 'inline-block'; // Tampilkan badge
+                    notificationLink.classList.add('text-danger'); // Tambahkan highlight
+                } else {
+                    notifNumber.textContent = ''; // Kosongkan badge
+                    notifNumber.parentElement.style.display = 'none'; // Sembunyikan badge
+                    notificationLink.classList.remove('text-danger'); // Hapus highlight
+                }
+            })
+            .catch(error => console.error('Error fetching notifications:', error));
+    }
+
+    // Jalankan pertama kali saat halaman dimuat
+    checkNotifications();
+
+    // Periksa notifikasi setiap 60 detik
+    setInterval(checkNotifications, 60000);
 </script>
 </body>
 

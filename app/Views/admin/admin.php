@@ -8,7 +8,7 @@
             <a class="btn btn-primary my-2" href="/administrator/admin/add">Tambah</a> 
             <input class="form-control w-auto " type="search" placeholder="Search" aria-label="Search" id="search-input">
         </div>                
-        <table class="table table-bordered table-striped text-center align-middle">
+        <table class="table table-bordered table-striped text-center align-middle" id="karyawan-table">
         <thead>
             <tr>
             <th scope="col" width="10px">No.</th>
@@ -45,5 +45,7 @@
         </tbody>
         </table>
     </div>
+
+<script src="/search-input.js"></script>
 
 <?= $this->endSection('content'); ?>

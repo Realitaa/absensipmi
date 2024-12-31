@@ -82,13 +82,13 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
         <?php if ($isAdmin) : ?>
-          <form action="<?= base_url('/administrator/admin/reset/' . $admin["id"]) ?>" method="post">
+          <form action="<?= base_url('/administrator/admin/reset/password/' . $admin["id"]) ?>" method="post">
               <input type="hidden" name="karyawan_id" value="<?= esc($admin['id']); ?>">
               <input type="hidden" name="password" value="">
               <button type="submit" class="btn btn-danger">Reset Password</button>
           </form>
         <?php else : ?>
-            <form action="<?= base_url('/administrator/karyawan/reset/' . $karyawan["id"]) ?>" method="post">
+            <form action="<?= base_url('/administrator/karyawan/reset/password/' . $karyawan["id"]) ?>" method="post">
               <input type="hidden" name="karyawan_id" value="<?= esc($karyawan['id']); ?>">
               <input type="hidden" name="password" value="">
               <button type="submit" class="btn btn-danger">Reset Password</button>
