@@ -21,7 +21,7 @@
                         </div>
                     </div>
                     <div class="col">
-                        <form action="<?= base_url('/administrator/karyawan/update' . $karyawan['id']) ?>" method="post">
+                        <form action="<?= base_url('/administrator/karyawan/update/' . $karyawan['id']) ?>" method="post">
                             <!-- Nama Pengguna -->
                             <div class="form-group">
                                 <label for="nama_lengkap" class="text-warning">Nama Lengkap</label>

@@ -12,7 +12,6 @@
         <thead>
             <tr>
             <th scope="col" width="10px">No.</th>
-            <th scope="col">Profil</th>
             <th scope="col">Nama</th>
             <th scope="col">Nama Pengguna</th>
             <th scope="col">Email</th>
@@ -27,13 +26,6 @@
                     foreach ($admins as $a):  ?>
                     <tr class="<?= (esc($a['status']) == 'nonaktif') ? 'table-warning' : ''; ?>">
                         <th scope="row"><?= $i++; ?></th>
-                        <td>
-                            <?php if (!empty($a['foto'])): ?>
-                                <img src="<?= esc($a['foto']); ?>" alt="Foto <?= esc($k['nama']); ?>" width="100" height="100">
-                            <?php else: ?>
-                                <span>Tidak ada foto</span>
-                            <?php endif; ?>
-                        </td>
                         <td><?= esc($a['nama']); ?></td>
                         <td><?= esc($a['nama_pengguna']); ?></td>
                         <td><?= esc($a['email']); ?></td>

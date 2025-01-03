@@ -373,10 +373,8 @@ class AdminController extends BaseController
             'nama_pengguna' => 'required|min_length[3]|max_length[50]',
             'email' => 'required|valid_email',
             'telepon' => 'required|numeric|min_length[10]|max_length[15]',
-            'password' => 'required|min_length[4]',
-            'confirm_password' => 'required|matches[password]',
         ]);
-        
+                
         if (!$validation) {
             // Jika validasi gagal, kembali ke halaman edit
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());

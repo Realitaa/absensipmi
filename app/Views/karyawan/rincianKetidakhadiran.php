@@ -16,7 +16,7 @@
             <tr>
                 <td>Nama</td>
                 <td>:</td>
-                <td><a href="/karyawan/<?= esc($karyawan['id']); ?>"><?= esc($karyawan['nama']); ?></a></td>
+                <td><a href="<?= session('user_data')['Role'] == 'karyawan' ? '/karyawan/' . esc($karyawan['id']) : '/administrator/karyawan/detail/' . esc($karyawan['id']) ?>"><?= esc($karyawan['nama']); ?></a></td>
             </tr>
             <tr>
                 <td>Jabatan</td>

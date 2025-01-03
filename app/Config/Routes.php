@@ -63,7 +63,7 @@ $routes->group('administrator', ['filter' => 'auth:admin'], function ($routes) {
     $routes->post('admin/delete/(:num)', 'AdminController::deleteAdmin/$1');
     $routes->post('admin/status/(:num)', 'AdminController::statusAdmin/$1');
     $routes->post('admin/update/(:num)', 'AdminController::updateAdmin/$1');
-    $routes->post('admin/reset/(:num)', 'AdminController::resetAdmin/$1');
+    $routes->post('admin/reset/password/(:num)', 'AdminController::resetAdmin/$1');
 
     //Menu Ketidakhadiran
     $routes->get('ketidakhadiran', 'AdminController::ketidakhadiran');
