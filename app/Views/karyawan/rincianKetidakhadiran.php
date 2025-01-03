@@ -110,7 +110,7 @@
 <!-- Elemen sticky -->
 <div class="sticky-bottom bg-info border-top py-3">
         <div class="d-flex justify-content-between px-5">
-            <form action="/administrator/ketidakhadiran/reject/<?= esc($absensi['id']); ?>" method="post">
+            <form action="/absensipmi/administrator/ketidakhadiran/reject/<?= esc($absensi['id']); ?>" method="post">
                 <input type="hidden" name="waktu" value="<?= esc($absensi['waktu']); ?>">
                 <input type="hidden" name="tipe" value="<?= esc($durasi['tipe']); ?>">
                 <button type="submit" class="btn btn-danger">Tolak</button>

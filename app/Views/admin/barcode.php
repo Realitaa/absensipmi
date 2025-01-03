@@ -51,7 +51,7 @@ function fetchLogs() {
     }
 
     $.ajax({
-        url: '<?= base_url('/administrator/absensi/getAttendanceLogs') ?>',
+        url: '<?= base_url('/absensipmi/administrator/absensi/getAttendanceLogs') ?>',
         method: 'GET',
         success: function (response) {
             if (response.logs) {
@@ -92,7 +92,7 @@ function addToLog(message) {
 // Fungsi untuk memeriksa QR Code
 function fetchQRCode() {
     $.ajax({
-        url: '<?= base_url('/administrator/absensi/fetchqr') ?>',
+        url: '<?= base_url('/absensipmi/administrator/absensi/fetchqr') ?>',
         method: 'GET',
         success: function (response) {
             qrCodeFailed = false; // Reset flag jika berhasil

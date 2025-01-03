@@ -104,7 +104,7 @@
         exportButton.disabled = true;
 
         // Lakukan fetch untuk mengambil data
-        fetch(`<?= site_url('/administrator/laporan/getHarianData'); ?>?tanggal=${tanggal}`)
+        fetch(`<?= site_url('/absensipmi/administrator/laporan/getHarianData'); ?>?tanggal=${tanggal}`)
             .then(response => response.json())
             .then(data => {
                 tableBody.innerHTML = ''; // Hapus baris loading
@@ -152,7 +152,7 @@
 
         // Lakukan AJAX untuk mengambil data
         $.ajax({
-            url: '<?= base_url('/administrator/laporan/getBulananData'); ?>',
+            url: '<?= base_url('/absensipmi/administrator/laporan/getBulananData'); ?>',
             type: 'GET',
             data: { bulan: bulan },
             success: function (data) {

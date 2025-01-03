@@ -130,7 +130,7 @@ class KaryawanController extends BaseController
             $currentDate = strtotime("+1 day", $currentDate);
         }
     
-        return redirect()->to('/home')->with('success', 'Formulir Ketidakhadiran sudah dikirim dan menunggu dikonfirmasi admin. Terima kasih.');
+        return redirect()->to('/absensipmi/home')->with('success', 'Formulir Ketidakhadiran sudah dikirim dan menunggu dikonfirmasi admin. Terima kasih.');
     }
     
 

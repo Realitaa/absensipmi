@@ -100,7 +100,7 @@ function showTable(status) {
     let tableContainer = document.getElementById('table-container');
     selectedCard = status;
 
-        fetch('/administrator/getDashboardData')
+        fetch('/absensipmi/administrator/getDashboardData')
             .then(response => response.json())
             .then(data => {
                 // Mengisi jumlah karyawan pada setiap card
@@ -112,7 +112,7 @@ function showTable(status) {
             .catch(error => console.error('Error fetching data:', error));
 
     // Memulai permintaan AJAX
-    fetch(`/administrator/getTableData/${status}`)
+    fetch(`/absensipmi/administrator/getTableData/${status}`)
         .then((response) => response.json())
         .then((result) => {
             let tableHtml = `<h3 class="mt-3">Tabel ${capitalizeFirstLetter(status)}</h3>`;

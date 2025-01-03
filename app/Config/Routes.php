@@ -8,10 +8,10 @@ use CodeIgniter\Router\RouteCollection;
 
 // Group Route Employee
 // Authentication
-$routes->view('/', 'login');
-$routes->post('/login', 'AuthController::login');
+$routes->view('absensipmi', 'login');
+$routes->post('absensipmi/login', 'AuthController::login');
 
-$routes->group('', ['filter' => 'auth:karyawan'], static function ($routes) {
+$routes->group('absensipmi', ['filter' => 'auth:karyawan'], static function ($routes) {
     $routes->get('home', 'KaryawanController::index');
     $routes->get('kehadiran', 'KaryawanController::kehadiran');
     $routes->post('kehadiran/hadir', 'KaryawanController::hadir');
@@ -22,9 +22,9 @@ $routes->group('', ['filter' => 'auth:karyawan'], static function ($routes) {
 
 // Group Route Administrator
 // Authentication
-$routes->view('/administrator', 'admin/login');
-$routes->post('/administrator/login', 'AuthController::AdminValidation');
-$routes->group('administrator', ['filter' => 'auth:admin'], function ($routes) {
+$routes->view('absensipmi/administrator', 'admin/login');
+$routes->post('absensipmi/administrator/login', 'AuthController::AdminValidation');
+$routes->group('absensipmi/administrator', ['filter' => 'auth:admin'], function ($routes) {
     // Navbar
     $routes->get('server-time', 'TimeController::getServerTime');
     $routes->get('ketidakhadiranNotif', 'AdminController::ketidakhadiranNotif');
@@ -78,10 +78,10 @@ $routes->group('administrator', ['filter' => 'auth:admin'], function ($routes) {
 });
 
 // Mendapatkan data Tabel Laporan absensi Bulanan Karyawan
-$routes->get('laporan/getUserBulananData', 'KaryawanController::getUserBulananData');
+$routes->get('absensipmi/laporan/getUserBulananData', 'KaryawanController::getUserBulananData');
 
 //Rincian Absensi
-$routes->get('absensi/(:num)', 'KaryawanController::rincianKetidakhadiran/$1');
+$routes->get('absensipmi/absensi/(:num)', 'KaryawanController::rincianKetidakhadiran/$1');
 
 // Logout Administrator dan Karyawan
-$routes->get('logout/(:segment)', 'AuthController::logout/$1'); 
+$routes->get('absensipmi/logout/(:segment)', 'AuthController::logout/$1'); 

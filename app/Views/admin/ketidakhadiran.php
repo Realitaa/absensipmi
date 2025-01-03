@@ -13,7 +13,7 @@
             <div class="col-lg">
                 <h5 class="card-title"><?= esc($k['nama']); ?></h5>
                 <p class="card-text"><b><?= esc($k['judul']); ?></b>: <?= esc($k['deskripsi']); ?></p>
-                <a href="/absensi/<?= $k['absensiID']; ?>" class="btn btn-info">Lihat Form Ketidakhadiran</a>
+                <a href="/absensipmi/absensi/<?= $k['absensiID']; ?>" class="btn btn-info">Lihat Form Ketidakhadiran</a>
             </div>
         </div>
     </div>

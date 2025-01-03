@@ -3,7 +3,7 @@
 <body>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/home">
+        <a class="navbar-brand" href="/absensipmi/home">
             <img src="https://www.pmimedan.or.id/wp-content/uploads/2021/02/logo-PMIMedan-e1618371991309.png" alt="Logo" height="24" class="d-inline-block align-text-top">
         </a>
             <ul class="navbar-nav me-auto">
@@ -26,9 +26,9 @@
                     <span class="ms-2"><?= session('user_data')['Username']; ?></span> <!-- Ganti dengan username pengguna yang diambil dari session -->
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li><a class="dropdown-item" href="/karyawan/me">Profile</a></li> <!-- Ganti 1 dengan pengambilan id untuk setiap pengguna -->
+                    <li><a class="dropdown-item" href="/absensipmi/karyawan/me">Profile</a></li> <!-- Ganti 1 dengan pengambilan id untuk setiap pengguna -->
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="/logout/user"><span class="text-danger">Log Out</span></a></li>
+                    <li><a class="dropdown-item" href="/absensipmi/logout/user"><span class="text-danger">Log Out</span></a></li>
                 </ul>
             </div>
     </div>

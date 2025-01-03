@@ -8,7 +8,7 @@
             <h4>Tambah Karyawan</h4>
         </div>
         <div class="card-body">
-            <form action="<?= base_url('/administrator/karyawan/save') ?>" method="post">
+            <form action="<?= base_url('/absensipmi/administrator/karyawan/save') ?>" method="post">
                     <div class="form-group">
                         <label for="nama_lengkap" class="text-primary">Nama Lengkap</label>
                         <input type="text" name="nama_lengkap" id="nama_lengkap" class="form-control <?= session('errors.nama_lengkap') ? 'is-invalid' : '' ?>" 
@@ -75,14 +75,3 @@
 </div>
 
 <?= $this->endSection('content'); ?>
-
-<!-- <div class="form-group mt-3">
-    <label for="jabatan" class="text-primary">Jabatan</label>
-    <select name="jabatan" id="jabatan" class="form-control" required>
-        <option value="" disabled selected>Pilih jabatan</option>
-        <option value="Manager">Manager</option>
-        <option value="Supervisor">Supervisor</option>
-        <option value="Staff">Staff</option>
-        <option value="Intern">Intern</option>
-    </select>
-</div> -->

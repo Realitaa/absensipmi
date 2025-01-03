@@ -30,7 +30,7 @@ class AuthController extends BaseController
                         'logged_in' => true,
                         'isSecureAccount' => false, // Akun tidak aman karena password kosong
                     ], 7200);
-                    return redirect()->to('/home');
+                    return redirect()->to('/absensipmi/home');
                 }
 
                 //Verifikasi password jika ada
@@ -48,21 +48,21 @@ class AuthController extends BaseController
                         'isSecureAccount' => true, //Akun aman
                     ], $sessionDuration);
     
-                    return redirect()->to('/home');
+                    return redirect()->to('/absensipmi/home');
                 } else {
                     // Kembali ke login jika password salah
                     $session->setFlashdata('error', 'Password salah.');
-                    return redirect()->to('/')->withInput();
+                    return redirect()->to('/absensipmi')->withInput();
                 }
             } else {
                 // Kembali ke login jika status nonaktif
                 $session->setFlashdata('error', 'Akun kamu dinonaktifkan.');
-                return redirect()->to('/')->withInput();
+                return redirect()->to('/absensipmi')->withInput();
             }
         } else {
             // Kembali ke login jika user tidak ditemukan
             $session->setFlashdata('error', 'Akun kamu tidak ditemukan.');
-            return redirect()->to('/');
+            return redirect()->to('/absensipmi');
         }
     }
 
@@ -88,21 +88,21 @@ class AuthController extends BaseController
                         'logged_in' => true,
                     ], 60 * 60 * 24); // 1 hari
     
-                    return redirect()->to('/administrator/dashboard');
+                    return redirect()->to('/absensipmi/administrator/dashboard');
                 } else {
                     // Kembali ke login jika password salah
                     $session->setFlashdata('error', 'Password salah.');
-                    return redirect()->to('/administrator')->withInput();
+                    return redirect()->to('/absensipmi/administrator')->withInput();
                 }
             } else {
                 // Kembali ke login jika akun dinonaktifkan
                 $session->setFlashdata('error', 'Akun kamu dinonaktifkan.');
-                return redirect()->to('/administrator');
+                return redirect()->to('/absensipmi/administrator');
             }
         } else {
             // Kembali ke login jika akun tidak terdaftar
             $session->setFlashdata('error', 'Akun tidak terdaftar.');
-            return redirect()->to('/administrator');
+            return redirect()->to('/absensipmi/administrator');
         }
     }
 
@@ -113,12 +113,12 @@ class AuthController extends BaseController
 
         // Menentukan redirect berdasarkan role
         if ($role == 'user') {
-            return redirect()->to('/');
+            return redirect()->to('/absensipmi');
         } else if ($role == 'admin') {
-            return redirect()->to('/administrator');
+            return redirect()->to('/absensipmi/administrator');
         }
 
         // Jika role tidak sesuai, redirect ke halaman login
-        return redirect()->to('/');
+        return redirect()->to('/absensipmi');
     }
 }

@@ -53,7 +53,7 @@
   <div class="login-container">
   <?php include  __DIR__ . '/../template/alertMessage.php';?>
     <h1>Administrator</h1>
-    <form action="/administrator/login" method="post">
+    <form action="/absensipmi/administrator/login" method="post">
       <div class="mb-3">
         <label for="floatingInput">Nama Pengguna</label>
         <input type="text" name="username" class="form-control" id="floatingInput">

@@ -32,9 +32,9 @@ class AuthFilter implements FilterInterface
         $currentRole = $userData['Role'] ?? null;
         $previousURL = previous_url();
 
-        // 1. Jika tidak ada role di session, redirect ke '/'
+        // 1. Jika tidak ada role di session, redirect ke '/absensipmi'
         if (!$currentRole) {
-            return redirect()->to('/');
+            return redirect()->to('/absensipmi');
         }
 
         // 2. Jika role di session adalah 'karyawan' dan mencoba akses admin

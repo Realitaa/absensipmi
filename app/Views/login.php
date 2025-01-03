@@ -59,7 +59,7 @@
 
   <?php include 'template/alertMessage.php' ?>
     <h1>Login</h1>
-    <form action="login" method="post">
+    <form action="/absensipmi/login" method="post">
       <div class="mb-3">
         <label for="floatingInput">Nama Pengguna</label>
         <input type="text" name="username" class="form-control" id="floatingInput">

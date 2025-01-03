@@ -65,7 +65,7 @@ $segment2 = $uri->getSegment(2);
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="<?= base_url('/karyawan/update/me'); ?>" method="post" enctype="multipart/form-data">
+        <form action="<?= base_url('/absensipmi/karyawan/update/me'); ?>" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="email" class="text-primary">Email</label>
                 <input type="text" name="email" id="email" class="form-control" placeholder="Masukkan email (wajib)" value="<?= esc($karyawan['email']); ?>">
@@ -105,7 +105,7 @@ $segment2 = $uri->getSegment(2);
         <h1 class="modal-title fs-5" id="batalAbsenModalLabel">Batalkan Absensi</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form id="batalAbsenForm" method="post" action="/administrator/karyawan/absensi/delete">
+      <form id="batalAbsenForm" method="post" action="/absensipmi/administrator/karyawan/absensi/delete">
         <div class="modal-body">
           <p>Apakah Anda yakin ingin membatalkan absensi ini?</p>
           <input type="hidden" name="id" id="absensi-id" value="">
@@ -155,7 +155,7 @@ $segment2 = $uri->getSegment(2);
 
         // Lakukan AJAX untuk mengambil data
         $.ajax({
-            url: '<?= base_url('/laporan/getUserBulananData'); ?>',
+            url: '<?= base_url('/absensipmi/laporan/getUserBulananData'); ?>',
             type: 'GET',
             data: { id: <?= esc($karyawan['id']); ?>, bulan: bulan },
             dataType: 'json',

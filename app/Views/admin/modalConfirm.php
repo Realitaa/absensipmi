@@ -18,12 +18,12 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
         <?php if ($isAdmin) : ?>
-          <form action="<?= base_url('/administrator/admin/status/' . $admin["id"]) ?>" method="post">
+          <form action="<?= base_url('/absensipmi/administrator/admin/status/' . $admin["id"]) ?>" method="post">
               <input type="hidden" name="karyawan_id" value="<?= esc($admin['id']); ?>">
               <button type="submit" class="btn btn-warning" name="action" value="nonactive">Ya</button>
           </form>
         <?php else : ?>
-          <form action="<?= base_url('/administrator/karyawan/status/' . $karyawan["id"]) ?>" method="post">
+          <form action="<?= base_url('/absensipmi/administrator/karyawan/status/' . $karyawan["id"]) ?>" method="post">
               <input type="hidden" name="karyawan_id" value="<?= esc($karyawan['id']); ?>">
               <button type="submit" class="btn btn-warning" name="action" value="nonactive">Ya</button>
           </form>
@@ -50,12 +50,12 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
         <?php if ($isAdmin) : ?>
-          <form action="<?= base_url('/administrator/admin/status/' . $admin["id"]) ?>" method="post">
+          <form action="<?= base_url('/absensipmi/administrator/admin/status/' . $admin["id"]) ?>" method="post">
               <input type="hidden" name="karyawan_id" value="<?= esc($admin['id']); ?>">
               <button type="submit" class="btn btn-success" name="action" value="active">Ya</button>
           </form>
         <?php else : ?>
-          <form action="<?= base_url('/administrator/karyawan/status/' . $karyawan["id"]) ?>" method="post">
+          <form action="<?= base_url('/absensipmi/administrator/karyawan/status/' . $karyawan["id"]) ?>" method="post">
               <input type="hidden" name="karyawan_id" value="<?= esc($karyawan['id']); ?>">
               <button type="submit" class="btn btn-success" name="action" value="active">Ya</button>
           </form>
@@ -82,13 +82,13 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
         <?php if ($isAdmin) : ?>
-          <form action="<?= base_url('/administrator/admin/reset/password/' . $admin["id"]) ?>" method="post">
+          <form action="<?= base_url('/absensipmi/administrator/admin/reset/password/' . $admin["id"]) ?>" method="post">
               <input type="hidden" name="karyawan_id" value="<?= esc($admin['id']); ?>">
               <input type="hidden" name="password" value="">
               <button type="submit" class="btn btn-danger">Reset Password</button>
           </form>
         <?php else : ?>
-            <form action="<?= base_url('/administrator/karyawan/reset/password/' . $karyawan["id"]) ?>" method="post">
+            <form action="<?= base_url('/absensipmi/administrator/karyawan/reset/password/' . $karyawan["id"]) ?>" method="post">
               <input type="hidden" name="karyawan_id" value="<?= esc($karyawan['id']); ?>">
               <input type="hidden" name="password" value="">
               <button type="submit" class="btn btn-danger">Reset Password</button>
@@ -116,12 +116,12 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
         <?php if ($isAdmin) : ?>
-          <form action="<?= base_url('/administrator/admin/delete/' . $admin["id"]) ?>" method="post">
+          <form action="<?= base_url('/absensipmi/administrator/admin/delete/' . $admin["id"]) ?>" method="post">
               <input type="hidden" name="karyawan_id" value="<?= esc($admin['id']); ?>">
               <button type="submit" class="btn btn-danger">Hapus Admin</button>
           </form>
         <?php else : ?>
-            <form action="<?= base_url('/administrator/karyawan/delete/' . $karyawan["id"]) ?>" method="post">
+            <form action="<?= base_url('/absensipmi/administrator/karyawan/delete/' . $karyawan["id"]) ?>" method="post">
               <input type="hidden" name="karyawan_id" value="<?= esc($karyawan['id']); ?>">
               <button type="submit" class="btn btn-danger">Hapus Karyawan</button>
           </form>

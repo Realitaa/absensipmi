@@ -141,9 +141,9 @@ class AdminController extends BaseController
         $inserted = $model->insert( $data);
 
         if ($inserted) {
-            return redirect()->to('/administrator//karyawan')->with('success', 'Karyawan baru ditambahkan!');
+            return redirect()->to('/absensipmi/administrator//karyawan')->with('success', 'Karyawan baru ditambahkan!');
         } else {
-            return redirect()->to('/administrator/karyawan')->with('error', 'Gagal menambahkan karyawan!');
+            return redirect()->to('/absensipmi/administrator/karyawan')->with('error', 'Gagal menambahkan karyawan!');
         }
     }
 
@@ -193,9 +193,9 @@ class AdminController extends BaseController
         $updated = $model->update($id, $data);
 
         if ($updated) {
-            return redirect()->to('/administrator/karyawan')->with('success', 'Data karyawan berhasil diperbarui!');
+            return redirect()->to('/absensipmi/administrator/karyawan')->with('success', 'Data karyawan berhasil diperbarui!');
         } else {
-            return redirect()->to('/administrator/karyawan')->with('error', 'Data karyawan gagal diperbarui!');
+            return redirect()->to('/absensipmi/administrator/karyawan')->with('error', 'Data karyawan gagal diperbarui!');
         }
     }
 
@@ -218,9 +218,9 @@ class AdminController extends BaseController
         
 
         if ($nonactive || $active) {
-            return redirect()->to('/administrator/karyawan')->with('success', 'Karyawan ' . $username['nama'] . ' berhasil ' . $status);
+            return redirect()->to('/absensipmi/administrator/karyawan')->with('success', 'Karyawan ' . $username['nama'] . ' berhasil ' . $status);
         } else {
-            return redirect()->to('/administrator/karyawan')->with('error', 'Karyawan ' . $username['nama'] . ' gagal ' . $status);
+            return redirect()->to('/absensipmi/administrator/karyawan')->with('error', 'Karyawan ' . $username['nama'] . ' gagal ' . $status);
         }
     }
 
@@ -245,9 +245,9 @@ class AdminController extends BaseController
         $restart = $model->update($id, ['foto' => '']);
 
         if ($restart) {
-            return redirect()->to('/administrator/karyawan/edit/' . $id)->with('success', 'Avatar sudah di reset.');
+            return redirect()->to('/absensipmi/administrator/karyawan/edit/' . $id)->with('success', 'Avatar sudah di reset.');
         } else {
-            return redirect()->to('/administrator/karyawan/edit/' . $id)->with('error', 'Avatar gagal di reset.');
+            return redirect()->to('/absensipmi/administrator/karyawan/edit/' . $id)->with('error', 'Avatar gagal di reset.');
         }
     }
     
@@ -257,9 +257,9 @@ class AdminController extends BaseController
         $deleted = $model->delete($id);
 
         if ($deleted) {
-            return redirect()->to('/administrator/karyawan')->with('success', 'Karyawan berhasil dihapus!');
+            return redirect()->to('/absensipmi/administrator/karyawan')->with('success', 'Karyawan berhasil dihapus!');
         } else {
-            return redirect()->to('/administrator/karyawan')->with('error', 'Karyawan gagal dihapus!');
+            return redirect()->to('/absensipmi/administrator/karyawan')->with('error', 'Karyawan gagal dihapus!');
         }
     }
 
@@ -269,9 +269,9 @@ class AdminController extends BaseController
         $reset = $model->update($id, ['password' => '']);
 
         if ($reset) {
-            return redirect()->to('/administrator/karyawan')->with('success', 'Password berhasil di reset!');
+            return redirect()->to('/absensipmi/administrator/karyawan')->with('success', 'Password berhasil di reset!');
         } else {
-            return redirect()->to('/administrator/karyawan')->with('error', 'Gagal reset password!');
+            return redirect()->to('/absensipmi/administrator/karyawan')->with('error', 'Gagal reset password!');
         }
     }
 
@@ -341,9 +341,9 @@ class AdminController extends BaseController
         $inserted = $model->insert( $data);
 
         if ($inserted) {
-            return redirect()->to('/administrator/admin')->with('success', 'Admin baru ditambahkan!');
+            return redirect()->to('/absensipmi/administrator/admin')->with('success', 'Admin baru ditambahkan!');
         } else {
-            return redirect()->to('/administrator/admin')->with('error', 'Gagal menambahkan admin baru!');
+            return redirect()->to('/absensipmi/administrator/admin')->with('error', 'Gagal menambahkan admin baru!');
         }
     }
 
@@ -392,9 +392,9 @@ class AdminController extends BaseController
         $updated = $model->update($id, $data);
 
         if ($updated) {
-            return redirect()->to('/administrator/admin')->with('success', 'Data admin berhasil diperbarui!');
+            return redirect()->to('/absensipmi/administrator/admin')->with('success', 'Data admin berhasil diperbarui!');
         } else {
-            return redirect()->to('/administrator/admin')->with('error', 'Data admin gagal diperbarui!');
+            return redirect()->to('/absensipmi/administrator/admin')->with('error', 'Data admin gagal diperbarui!');
         }
     }
 
@@ -422,9 +422,9 @@ class AdminController extends BaseController
         
 
         if ($nonactive || $active) {
-            return redirect()->to('/administrator/admin')->with('success', 'Admin ' . $username['nama'] . ' berhasil ' . $status);
+            return redirect()->to('/absensipmi/administrator/admin')->with('success', 'Admin ' . $username['nama'] . ' berhasil ' . $status);
         } else {
-            return redirect()->to('/administrator/admin')->with('error', 'Admin ' . $username['nama'] . ' gagal ' . $status);
+            return redirect()->to('/absensipmi/administrator/admin')->with('error', 'Admin ' . $username['nama'] . ' gagal ' . $status);
         }
     }
     
@@ -434,12 +434,12 @@ class AdminController extends BaseController
         if ($admin > 1) {
             $deleted = $model->delete($id);
             if ($deleted) {
-                return redirect()->to('/administrator/admin')->with('success', 'Admin berhasil dihapus!');
+                return redirect()->to('/absensipmi/administrator/admin')->with('success', 'Admin berhasil dihapus!');
             } else {
-                return redirect()->to('/administrator/admin')->with('error', 'Admin gagal dihapus!');
+                return redirect()->to('/absensipmi/administrator/admin')->with('error', 'Admin gagal dihapus!');
             }
         } else {
-            return redirect()->to('/administrator/admin')->with('error', 'Minimal ada satu admin yang aktif');
+            return redirect()->to('/absensipmi/administrator/admin')->with('error', 'Minimal ada satu admin yang aktif');
         }
     }
     
@@ -449,9 +449,9 @@ class AdminController extends BaseController
         $reset = $model->update($id, ['password' =>  password_hash('udd123', PASSWORD_BCRYPT)]);
 
         if ($reset) {
-            return redirect()->to('/administrator/admin')->with('success', 'Password berhasil di reset!');
+            return redirect()->to('/absensipmi/administrator/admin')->with('success', 'Password berhasil di reset!');
         } else {
-            return redirect()->to('/administrator/admin')->with('error', 'Gagal reset password!');
+            return redirect()->to('/absensipmi/administrator/admin')->with('error', 'Gagal reset password!');
         }
     }
 
@@ -508,9 +508,9 @@ class AdminController extends BaseController
         }
     
         if ($terima) {
-            return redirect()->to('/administrator/ketidakhadiran')->with('success', 'Formulir Ketidakhadiran sudah diterima');
+            return redirect()->to('/absensipmi/administrator/ketidakhadiran')->with('success', 'Formulir Ketidakhadiran sudah diterima');
         } else {
-            return redirect()->to('/administrator/ketidakhadiran')->with('error', 'Gagal menerima formulir ketidakhadiran');
+            return redirect()->to('/absensipmi/administrator/ketidakhadiran')->with('error', 'Gagal menerima formulir ketidakhadiran');
         }
     }
     
@@ -529,9 +529,9 @@ class AdminController extends BaseController
 
     
         if ($tolak) {
-            return redirect()->to('/administrator/ketidakhadiran')->with('success', 'Formulir ketidakhadiran sudah ditolak');
+            return redirect()->to('/absensipmi/administrator/ketidakhadiran')->with('success', 'Formulir ketidakhadiran sudah ditolak');
         } else {
-            return redirect()->to('/administrator/ketidakhadiran')->with('error', 'Gagal menolak formulir ketidakhadiran');
+            return redirect()->to('/absensipmi/administrator/ketidakhadiran')->with('error', 'Gagal menolak formulir ketidakhadiran');
         }
     }
     
@@ -624,6 +624,13 @@ class AdminController extends BaseController
     }
 
     public function absensi() {
+        $model = new QRCodeModel();
+
+        // Reset auto-increment pada tabel tertentu (misalnya 'absensi')
+        $db = \Config\Database::connect();
+        $query = "ALTER TABLE qrcode AUTO_INCREMENT = 1"; 
+        $db->query($query);  // Jalankan query
+
         $data = [
             'title' => 'Barcode Absensi',
         ];
